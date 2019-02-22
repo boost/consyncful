@@ -1,0 +1,68 @@
+{
+  "sys": {
+    "type": "Array"
+  },
+  "items": [
+    {
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "spaceId"
+          }
+        },
+        "id": "itemId",
+        "type": "Entry",
+        "createdAt": "2019-02-22T00:36:52.252Z",
+        "updatedAt": "2019-02-22T00:36:52.252Z",
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "revision": 1,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "itemType"
+          }
+        }
+      },
+      "fields": {
+        "description": {
+          "en-NZ": "Andy & Monty's Test"
+        },
+        "text": {
+          "en-NZ": {
+            "nodeType": "document",
+            "data": {
+            },
+            "content": [
+              {
+                "nodeType": "paragraph",
+                "content": [
+                  {
+                    "nodeType": "text",
+                    "value": "Test content",
+                    "marks": [
+
+                    ],
+                    "data": {
+                    }
+                  }
+                ],
+                "data": {
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "nextSyncUrl": "http://next_url.example"
+}

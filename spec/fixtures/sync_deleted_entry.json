@@ -1,0 +1,32 @@
+{
+  "sys": {
+    "type": "Array"
+  },
+  "items": [
+    {
+      "sys": {
+        "type": "DeletedEntry",
+        "id": "itemId",
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "spaceId"
+          }
+        },
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "revision": 1,
+        "createdAt": "2019-02-22T00:32:40.054Z",
+        "updatedAt": "2019-02-22T00:32:40.054Z",
+        "deletedAt": "2019-02-22T00:32:40.054Z"
+      }
+    }
+  ],
+  "nextSyncUrl": "http://next_url.example"
+}

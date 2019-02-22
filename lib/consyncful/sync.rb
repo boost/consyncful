@@ -34,7 +34,8 @@ module Consyncful
 
     def run
       stats = Consyncful::Stats.new
-      # Rails.application.eager_load! # todo
+      load_all_models
+
       sync = start_sync
 
       sync_items(sync, stats)
@@ -47,9 +48,14 @@ module Consyncful
 
     private
 
+    def load_all_models
+      return unless defined? Rails
+      Rails.application.eager_load!
+    end
+
     def start_sync
       if next_url.present?
-        puts "Starting update, last update: #{last_run_at} (#{Time.current - last_run_at}s ago)".blue
+        puts "Starting update, last update: #{last_run_at} (#{(Time.current - last_run_at).round(3)}s ago)".blue
         Consyncful.client.sync(next_url)
       else
         puts 'Starting full refresh'.blue
