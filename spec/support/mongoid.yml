@@ -1,0 +1,6 @@
+test:
+  clients:
+    default:
+      database: consyncful_test
+      hosts:
+        - localhost:27017

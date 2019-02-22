@@ -17,7 +17,27 @@ And then execute:
 
 ## Usage
 
+### Setup
+
+Add an initializer:
+```
+  Consyncful.configure do |config|
+    config.locale = 'en-NZ'
+    config.contentful_client_options = {
+      api_url: 'cdn.contentful.com',
+      space: 'space_id',
+      access_token: 'ACCESS TOKEN',
+      environment: 'master',        # optional
+      logger: Logger.new(STDOUT)    # optional for debugging
+    }
+  end
+```
+
 TODO: Write usage instructions here
+
+## Limitations
+
+- locales (only one)
 
 ## Development
 

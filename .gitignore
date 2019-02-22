@@ -6,6 +6,8 @@
 /pkg/
 /spec/reports/
 /tmp/
+/dev_data/**/*
+!/dev_data/.keep
 
 # rspec failure tracking
 .rspec_status

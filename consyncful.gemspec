@@ -9,9 +9,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Andy Anastasiadis-Gray"]
   spec.email         = ["andy@boost.co.nz"]
 
-  spec.summary       = %q{TODO: Write a short summary, because RubyGems requires one.}
-  spec.description   = %q{TODO: Write a longer description or delete this line.}
-  spec.homepage      = "TODO: Put your gem's website or public repo URL here."
+  spec.summary       = %q{Contentful to local database synchronisation for Rails}
+  # spec.homepage      = "TODO: Put your gem's website or public repo URL here."
   spec.license       = "MIT"
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
@@ -33,4 +32,8 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "bundler", "~> 1.16"
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rspec", "~> 3.0"
+
+  spec.add_dependency "mongoid", [">=7.0.2", "<8.0.0"]
+  spec.add_dependency "contentful", [">=2.11.1", "<3.0.0"]
+  spec.add_dependency 'term-ansicolor'
 end
