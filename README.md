@@ -7,7 +7,12 @@ too slow, and makes testing applications painful. Consyncful uses Contentful's s
 to keep a local copy of the entire content in a Mongo database up to date.
 
 Once the content is availble locally, finding and interact with contentful data is as easy as 
-using [Mongoid](https://docs.mongodb.com/mongoid/current/tutorials/mongoid-documents/) ORM. 
+using [Mongoid](https://docs.mongodb.com/mongoid/current/tutorials/mongoid-documents/) ODM. 
+
+## Why do I have to use MongoDB?
+
+Consyncful currently only supports Mongoid ODM because models have dynamic schemas. And that's all we've had a chance to work out so far. :) 
+The same pattern might be able to be extended to work with ActiveRecord, but having to migrate the local database as well as your contentful content type's seems tedious.
 
 ## Installation
 
@@ -66,7 +71,7 @@ end
 Contentful reference fields are a bit special compared with standard mongoid associations, Consyncful provides the following helpers to set up the correct relationships:
 
 ```ruby 
-class ModelName < Consyncful::Base
+class ModelWithReferences < Consyncful::Base
   contentful_model_name 'contentfulTypeName'
 
   references_one :thing
@@ -88,8 +93,34 @@ If you want to delete everything and start syncronising from scratch run:
 
 It is recommended to refresh your data if you change model names.
 
- 
+Now you've synced your data, it is all available via your rails models
 
+### Finding and interacting with models
+
+Models are available using standard mongoid [queries](https://docs.mongodb.com/mongoid/current/tutorials/mongoid-queries/).
+
+```ruby
+instance = ModelName.find_by(instance: 'foo')
+
+instance.is_awesome => true
+```
+
+References work like you woule expect:
+
+```ruby
+
+instance = ModelWithReferences.find('contentfulID')
+
+instance.thing #=> returns the referenced thing
+instance.other_things #=> all the referenced things, polymorphic, so might be different types
+```
+
+**Except**:
+`references_many` associations return objects in a different order from how they are ordered in contentful. If you want them in the order they appare in contentful, use the `.in_order` helper:
+
+```ruby
+instance.other_things.in_order #=> ordered the same as in contentful
+```
 
 ## Limitations
 
