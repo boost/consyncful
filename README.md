@@ -1,6 +1,6 @@
 # Consyncful
 
-Contentful to local database synchronisation for Rails
+Contentful -> local database synchronisation for Rails
 
 Requesting complicated models from the Contentful Delivery API in Rails applications is often
 too slow, and makes testing applications painful. Consyncful uses Contentful's syncronisation API 
@@ -8,6 +8,8 @@ to keep a local copy of the entire content in a Mongo database up to date.
 
 Once the content is availble locally, finding and interact with contentful data is as easy as 
 using [Mongoid](https://docs.mongodb.com/mongoid/current/tutorials/mongoid-documents/) ODM. 
+
+This gem doesn't provide any intergration with the management api or any way to update contentful models from the local store. It is strictly read only.
 
 ## Why do I have to use MongoDB?
 
@@ -97,34 +99,46 @@ Now you've synced your data, it is all available via your rails models
 
 ### Finding and interacting with models
 
+#### Querying
 Models are available using standard mongoid [queries](https://docs.mongodb.com/mongoid/current/tutorials/mongoid-queries/).
 
 ```ruby
 instance = ModelName.find_by(instance: 'foo')
 
-instance.is_awesome => true
+instance.is_awesome # true
 ```
 
+#### References
 References work like you woule expect:
 
 ```ruby
 
 instance = ModelWithReferences.find('contentfulID')
 
-instance.thing #=> returns the referenced thing
-instance.other_things #=> all the referenced things, polymorphic, so might be different types
+instance.thing # returns the referenced thing
+instance.other_things # all the referenced things, polymorphic, so might be different types
 ```
 
 **Except**:
 `references_many` associations return objects in a different order from how they are ordered in contentful. If you want them in the order they appare in contentful, use the `.in_order` helper:
 
 ```ruby
-instance.other_things.in_order #=> ordered the same as in contentful
+instance.other_things.in_order # ordered the same as in contentful
+```
+
+#### Finding entrys from different content types
+
+Because all contentful models are stored as polymorphic subtypes of Consyncful::Base, you can query all entries without knowing what type you are looking for:
+
+```ruby
+  Consyncful::Base.where(title: 'a title') # [ #<ModelName>, #<OtherModelName> ]
 ```
 
 ## Limitations
 
-- locales (only one)
+### Locales
+
+Current Consyncful only uses one globally configured locale to map the data to the database.
 
 ## Development
 
