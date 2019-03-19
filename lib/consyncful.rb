@@ -38,7 +38,6 @@ module Consyncful
     @client ||= begin
       options = Consyncful.configuration.contentful_client_options
       options.reverse_merge!(DEFAULT_CLIENT_OPTIONS)
-
       Contentful::Client.new(options)
     end
   end

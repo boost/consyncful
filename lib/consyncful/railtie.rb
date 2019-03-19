@@ -2,6 +2,6 @@
 
 class Consyncful::Railtie < Rails::Railtie
   rake_tasks do
-    load 'tasks/consyncful.rake'
+    load 'consyncful/tasks/consyncful.rake'
   end
 end

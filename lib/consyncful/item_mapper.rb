@@ -51,7 +51,7 @@ module Consyncful
 
     def raw_file(locale)
       file_json = @item.raw.fetch('fields', {}).fetch('file', nil)
-      file_json[locale]
+      file_json[locale] unless file_json.nil?
     end
 
     def reference_value?(value)

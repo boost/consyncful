@@ -11,7 +11,6 @@ end
 module Consyncful
   class Sync
     include Mongoid::Document
-    # include ActionView::Helpers::DateHelper
 
     DEFAULT_LOCALE = 'en-NZ'
 
