@@ -75,7 +75,7 @@ RSpec.describe Consyncful::Sync do
       context 'when the item is a create or update' do
         let(:mapped_fields) { {field_name: 'value', other_field: 3} }
         let(:mapper) { instance_double("Consyncful::ItemMapper", deletion?: false, id: 'itemId', type: 'itemType', mapped_fields: mapped_fields) }
-        let(:instance) { instance_double("Consyncful::Base", persisted?: false, save: true, :[]= => nil) }
+        let(:instance) { instance_double("Consyncful::Base", persisted?: false, save: true, :[]= => nil, attributes: []) }
 
         class self::TestContentfulType < Consyncful::Base
           contentful_model_name 'itemType'
@@ -92,6 +92,10 @@ RSpec.describe Consyncful::Sync do
           expect(instance).to receive(:[]=).with(:field_name, 'value')
           expect(instance).to receive(:[]=).with(:other_field, 3)
           sync.run
+        end
+
+        it 'nils all other fields' do
+          pending
         end
 
         it 'saves the iteam' do

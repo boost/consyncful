@@ -94,6 +94,8 @@ module Consyncful
       instance = find_or_initialize_item(item)
       update_stats(instance, stats)
 
+      reset_fields(instance)
+
       item.mapped_fields(DEFAULT_LOCALE).each do |field, value|
         instance[field] = value
       end
@@ -115,6 +117,14 @@ module Consyncful
 
     def model_class(type)
       Base.model_map[type] || Base
+    end
+
+    def reset_fields(instance)
+      instance.attributes.each do |field_name, _value|
+        next if field_name.in? %w[_id _type]
+
+        instance[field_name] = nil
+      end
     end
   end
 end
