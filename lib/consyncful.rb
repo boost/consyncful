@@ -6,6 +6,8 @@ require 'contentful'
 require "consyncful/base"
 require "consyncful/sync"
 
+require "consyncful/railtie" if defined?(Rails)
+
 module Consyncful
   class << self
     attr_accessor :configuration
