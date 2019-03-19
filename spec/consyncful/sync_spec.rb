@@ -95,7 +95,7 @@ RSpec.describe Consyncful::Sync do
         end
 
         it 'nils all other fields' do
-          pending
+          skip 'need this test'
         end
 
         it 'saves the iteam' do
