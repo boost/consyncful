@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["andy@boost.co.nz", "montgomery@boost.co.nz"]
 
   spec.summary       = %q{Contentful to local database synchronisation for Rails}
-  # spec.homepage      = "TODO: Put your gem's website or public repo URL here."
+  spec.homepage      = "https://github.com/boost/consyncful"
   spec.license       = "MIT"
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
