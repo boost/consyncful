@@ -90,7 +90,7 @@ To run a syncronization process run:
 
 The first time you run this it will download all the contentful content, it will then check every 15 seconds for changes to the content and update/delete records in the database when changes are made in contentful.
 
-If you want to delete everything and start syncronising from scratch run:
+If you want to syncronise from scratch run:
 
     $ rake consyncful:refresh
 
