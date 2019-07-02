@@ -104,28 +104,28 @@ RSpec.describe Consyncful::ItemMapper do
       expect(item.mapped_fields('en-NZ')).to include(
         description: 'Govt loan reg text',
         text: {
-            'nodeType' => 'document',
-            'data' => {},
-            'content' => [{ 'nodeType' => 'paragraph', 'content' => [{ 'nodeType' => 'text', 'value' => 'To register as a government loans client please fill in the form below.', 'marks' => [], 'data' => {} }], 'data' => {} }]
-          }
+          'nodeType' => 'document',
+          'data' => {},
+          'content' => [{ 'nodeType' => 'paragraph', 'content' => [{ 'nodeType' => 'text', 'value' => 'To register as a government loans client please fill in the form below.', 'marks' => [], 'data' => {} }], 'data' => {} }]
+        }
       )
     end
 
     context 'when the entry includes reference fields' do
       before do
         entry_json['fields']['manyRefs'] = {
-          "en-NZ" => [
-            {"sys"=>{"type"=>"Link", "linkType"=>"Entry", "id"=>"5MLrvU144Mg0OQIwIyeWea"}},
-            {"sys"=>{"type"=>"Link", "linkType"=>"Entry", "id"=>"11baJLRlumIIGEqOGaUW0Y"}}
+          'en-NZ' => [
+            { 'sys' => { 'type' => 'Link', 'linkType' => 'Entry', 'id' => '5MLrvU144Mg0OQIwIyeWea' } },
+            { 'sys' => { 'type' => 'Link', 'linkType' => 'Entry', 'id' => '11baJLRlumIIGEqOGaUW0Y' } }
           ]
         }
         entry_json['fields']['oneRef'] = {
-          "en-NZ" => {"sys"=>{"type"=>"Link", "linkType"=>"Entry", "id"=>"5MLrvU144Mg0OQIwIyeWea"}},
+          'en-NZ' => { 'sys' => { 'type' => 'Link', 'linkType' => 'Entry', 'id' => '5MLrvU144Mg0OQIwIyeWea' } }
         }
       end
 
       it 'returns many refs as an array of ids in a field the the correct name for mongoid' do
-        expect(item.mapped_fields('en-NZ')).to include(many_ref_ids: ['5MLrvU144Mg0OQIwIyeWea', '11baJLRlumIIGEqOGaUW0Y'])
+        expect(item.mapped_fields('en-NZ')).to include(many_ref_ids: %w[5MLrvU144Mg0OQIwIyeWea 11baJLRlumIIGEqOGaUW0Y])
       end
 
       it 'returns one refs as the correct name for mongoid' do
@@ -155,19 +155,19 @@ RSpec.describe Consyncful::ItemMapper do
 
     context 'when the item is a DeletedEntry or an DeletedAsset' do
       let(:deleted_item_json) do
-        {"sys"=>
-          {"type"=>"DeletedEntry",
-           "id"=>"itemID",
-           "space"=>{"sys"=>{"type"=>"Link", "linkType"=>"Space", "id"=>"spaceId"}},
-           "environment"=>{"sys"=>{"id"=>"master", "type"=>"Link", "linkType"=>"Environment"}},
-           "revision"=>1,
-           "createdAt"=>"2019-02-20T18:25:21.515Z",
-           "updatedAt"=>"2019-02-20T18:25:21.515Z",
-           "deletedAt"=>"2019-02-20T18:25:21.515Z"}}
+        { 'sys' =>
+          { 'type' => 'DeletedEntry',
+            'id' => 'itemID',
+            'space' => { 'sys' => { 'type' => 'Link', 'linkType' => 'Space', 'id' => 'spaceId' } },
+            'environment' => { 'sys' => { 'id' => 'master', 'type' => 'Link', 'linkType' => 'Environment' } },
+            'revision' => 1,
+            'createdAt' => '2019-02-20T18:25:21.515Z',
+            'updatedAt' => '2019-02-20T18:25:21.515Z',
+            'deletedAt' => '2019-02-20T18:25:21.515Z' } }
       end
       it 'returns true' do
         deleted_item = Contentful::DeletedEntry.new(deleted_item_json, {}, true)
-        deleted_item_json["sys"]["type"] = 'DeletedAsset'
+        deleted_item_json['sys']['type'] = 'DeletedAsset'
         deleted_asset = Contentful::DeletedAsset.new(deleted_item_json, {}, true)
 
         expect(Consyncful::ItemMapper.new(deleted_item).deletion?).to eq true

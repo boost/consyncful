@@ -9,7 +9,7 @@ namespace :consyncful do
     Consyncful::Sync.fresh.run
   end
 
-  task :sync, [:seconds] => [:environment, :update_model_names] do |task, args|
+  task :sync, [:seconds] => %i[environment update_model_names] do |_task, args|
     seconds = args[:seconds].to_i
     seconds = 15 if seconds.zero?
     loop do

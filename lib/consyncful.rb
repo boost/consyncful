@@ -1,12 +1,14 @@
-require "consyncful/version"
+# frozen_string_literal: true
+
+require 'consyncful/version'
 
 require 'mongoid'
 require 'contentful'
 
-require "consyncful/base"
-require "consyncful/sync"
+require 'consyncful/base'
+require 'consyncful/sync'
 
-require "consyncful/railtie" if defined?(Rails)
+require 'consyncful/railtie' if defined?(Rails)
 
 module Consyncful
   class << self
@@ -32,7 +34,7 @@ module Consyncful
   DEFAULT_CLIENT_OPTIONS = {
     reuse_entries: true,
     api_url: 'cdn.contentful.com'
-  }
+  }.freeze
 
   def self.client
     @client ||= begin

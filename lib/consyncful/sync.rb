@@ -21,14 +21,15 @@ module Consyncful
       last || new
     end
 
-    def self.reset
+    def self.fresh
       destroy_all
-      Base.destroy_all
+      latest
     end
 
-    def self.fresh
-      reset
-      latest
+    def drop_stale
+      stale = Base.where(:sync_id.ne => id, :sync_id.exists => true)
+      puts "Dropping #{stale.count} records that haven't been touched in this sync".red
+      stale.destroy
     end
 
     def run
@@ -38,6 +39,8 @@ module Consyncful
       sync = start_sync
 
       sync_items(sync, stats)
+
+      drop_stale
 
       self.next_url = sync.next_sync_url
       self.last_run_at = Time.current
@@ -49,6 +52,7 @@ module Consyncful
 
     def load_all_models
       return unless defined? Rails
+
       Rails.application.eager_load!
     end
 
@@ -98,6 +102,8 @@ module Consyncful
       item.mapped_fields(DEFAULT_LOCALE).each do |field, value|
         instance[field] = value
       end
+
+      instance[:sync_id] = id
 
       instance.save
     end

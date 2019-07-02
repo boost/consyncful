@@ -18,9 +18,31 @@ RSpec.describe Consyncful::Sync do
     end
   end
 
+  describe '.drop_stale' do
+    let(:sync1) { Consyncful::Sync.create }
+    let(:sync2) { Consyncful::Sync.create }
+    let!(:record1) { Consyncful::Base.create(sync_id: sync1.id) }
+    let!(:record2) { Consyncful::Base.create(sync_id: sync1.id) }
+    let!(:record3) { Consyncful::Base.create(sync_id: sync2.id) }
+
+
+    it 'destroys all records that werent synced by this sync' do
+      sync2.drop_stale
+      expect(Consyncful::Base.count).to eq 1
+      expect(Consyncful::Base.all).to include(record3)
+    end
+
+    it 'does not destroy records with no sync_id' do
+      record2.unset(:sync_id)
+      sync2.drop_stale
+      expect(Consyncful::Base.count).to eq 2
+      expect(Consyncful::Base.all).to include(record2, record3)
+    end
+  end
+
   describe '#run' do
-    let(:client) { instance_double("Contentful::Client", sync: client_sync) }
-    let(:client_sync) { instance_double("Contentful::Sync", each_page: [], next_sync_url: 'next_url') }
+    let(:client) { instance_double('Contentful::Client', sync: client_sync) }
+    let(:client_sync) { instance_double('Contentful::Sync', each_page: [], next_sync_url: 'next_url') }
     before do
       allow(Consyncful).to receive(:client).and_return(client)
     end
@@ -52,9 +74,9 @@ RSpec.describe Consyncful::Sync do
     context 'when there are items to sync' do
       let(:sync) { Consyncful::Sync.create }
       let(:page) do
-        double('page', items: [ double('item') ])
+        double('page', items: [double('item')])
       end
-      let(:mapper) { instance_double("Consyncful::ItemMapper") }
+      let(:mapper) { instance_double('Consyncful::ItemMapper') }
 
       before do
         allow(client_sync).to receive(:each_page).and_yield(page)
@@ -62,8 +84,8 @@ RSpec.describe Consyncful::Sync do
       end
 
       context 'when the item is a deletion' do
-        let(:mapper) { instance_double("Consyncful::ItemMapper", deletion?: true, id: 'itemId') }
-        let(:instance) { instance_double("Consyncful::Base") }
+        let(:mapper) { instance_double('Consyncful::ItemMapper', deletion?: true, id: 'itemId') }
+        let(:instance) { instance_double('Consyncful::Base') }
 
         it 'finds the model and destroys it' do
           expect(Consyncful::Base).to receive(:find_by).with(id: 'itemId').and_return(instance)
@@ -73,9 +95,9 @@ RSpec.describe Consyncful::Sync do
       end
 
       context 'when the item is a create or update' do
-        let(:mapped_fields) { {field_name: 'value', other_field: 3} }
-        let(:mapper) { instance_double("Consyncful::ItemMapper", deletion?: false, id: 'itemId', type: 'itemType', mapped_fields: mapped_fields) }
-        let(:instance) { instance_double("Consyncful::Base", persisted?: false, save: true, :[]= => nil, attributes: []) }
+        let(:mapped_fields) { { field_name: 'value', other_field: 3 } }
+        let(:mapper) { instance_double('Consyncful::ItemMapper', deletion?: false, id: 'itemId', type: 'itemType', mapped_fields: mapped_fields) }
+        let(:instance) { instance_double('Consyncful::Base', persisted?: false, save: true, :[]= => nil, attributes: []) }
 
         class self::TestContentfulType < Consyncful::Base
           contentful_model_name 'itemType'
@@ -91,6 +113,12 @@ RSpec.describe Consyncful::Sync do
           allow(klass).to receive(:find_or_initialize_by).with(id: 'itemId').and_return(instance)
           expect(instance).to receive(:[]=).with(:field_name, 'value')
           expect(instance).to receive(:[]=).with(:other_field, 3)
+          sync.run
+        end
+
+        it 'sets the sync id on the item' do
+          allow(klass).to receive(:find_or_initialize_by).with(id: 'itemId').and_return(instance)
+          expect(instance).to receive(:[]=).with(:sync_id, sync.id)
           sync.run
         end
 
