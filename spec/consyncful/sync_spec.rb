@@ -3,21 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Consyncful::Sync do
-  describe '.reset' do
-    let(:sync1) { Consyncful::Sync.create }
-    let(:sync2) { Consyncful::Sync.create }
-
-    it 'deletes all saved sync urls' do
-      Consyncful::Sync.reset
-      expect(Consyncful::Sync.count).to eq 0
-    end
-
-    it 'deletes all entries inheriting from Consyncful::Base' do
-      expect(Consyncful::Base).to receive(:destroy_all)
-      Consyncful::Sync.reset
-    end
-  end
-
   describe '.drop_stale' do
     let(:sync1) { Consyncful::Sync.create }
     let(:sync2) { Consyncful::Sync.create }

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+require 'rainbow'
 
 module Consyncful
   class Stats
@@ -23,9 +24,9 @@ module Consyncful
     end
 
     def print_stats
-      puts "Added: #{@stats[:records_added]}, \
+      puts Rainbow("Added: #{@stats[:records_added]}, \
         updated:  #{@stats[:records_updated]}, \
-        deleted: #{@stats[:records_deleted]}".blue
+        deleted: #{@stats[:records_deleted]}").blue
     end
   end
 end
