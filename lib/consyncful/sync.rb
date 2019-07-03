@@ -1,12 +1,8 @@
 # frozen_string_literal: true
 
-require 'term/ansicolor'
+require 'rainbow'
 require 'consyncful/item_mapper'
 require 'consyncful/stats'
-
-class String
-  include Term::ANSIColor
-end
 
 module Consyncful
   class Sync
@@ -28,7 +24,7 @@ module Consyncful
 
     def drop_stale
       stale = Base.where(:sync_id.ne => id, :sync_id.exists => true)
-      puts "Dropping #{stale.count} records that haven't been touched in this sync".red
+      puts Rainbow("Dropping #{stale.count} records that haven't been touched in this sync").red
       stale.destroy
     end
 
@@ -58,10 +54,10 @@ module Consyncful
 
     def start_sync
       if next_url.present?
-        puts "Starting update, last update: #{last_run_at} (#{(Time.current - last_run_at).round(3)}s ago)".blue
+        puts Rainbow("Starting update, last update: #{last_run_at} (#{(Time.current - last_run_at).round(3)}s ago)").blue
         Consyncful.client.sync(next_url)
       else
-        puts 'Starting full refresh'.blue
+        puts Rainbow('Starting full refresh').blue
         Consyncful.client.sync(initial: true)
       end
     end
@@ -75,7 +71,7 @@ module Consyncful
     end
 
     def sync_item(item, stats)
-      puts "syncing: #{item.id}".yellow
+      puts Rainbow("syncing: #{item.id}").yellow
       if item.deletion?
         delete_model(item.id, stats)
       else
@@ -87,7 +83,7 @@ module Consyncful
       Base.find_by(id: id).destroy
       stats.record_deleted
     rescue Mongoid::Errors::DocumentNotFound
-      puts "Deleted record not found: #{id}".yellow
+      puts Rainbow("Deleted record not found: #{id}").yellow
       nil
     end
 
