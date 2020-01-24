@@ -10,4 +10,4 @@ services:
 
 script: 
   - bundle exec rake spec
-  - rubocop -P
+  - bundle exec rubocop -P
