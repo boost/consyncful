@@ -7,3 +7,7 @@ rvm:
 before_install: gem install bundler
 services:
   - mongodb
+
+script: 
+  - bundle exec rake spec
+  - rubocop -P
