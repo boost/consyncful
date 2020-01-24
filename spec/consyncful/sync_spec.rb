@@ -10,7 +10,6 @@ RSpec.describe Consyncful::Sync do
     let!(:record2) { Consyncful::Base.create(sync_id: sync1.id) }
     let!(:record3) { Consyncful::Base.create(sync_id: sync2.id) }
 
-
     it 'destroys all records that werent synced by this sync' do
       sync2.drop_stale
       expect(Consyncful::Base.count).to eq 1
