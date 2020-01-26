@@ -2,6 +2,7 @@
 
 require 'spec_helper'
 
+# rubocop:disable Metrics/BlockLength
 RSpec.describe Consyncful::ItemMapper do
   let(:entry_json) do
     {
@@ -29,7 +30,7 @@ RSpec.describe Consyncful::ItemMapper do
   end
   let(:contentful_entry) { Contentful::Entry.new(entry_json, {}, true) }
 
-  let(:asset_json) do
+  let(:image_asset_json) do
     {
       'sys' => {
         'space' => { 'sys' => { 'type' => 'Link', 'linkType' => 'Space', 'id' => 'spaceId' } },
@@ -54,7 +55,34 @@ RSpec.describe Consyncful::ItemMapper do
       }
     }
   end
-  let(:contentful_asset) { Contentful::Asset.new(asset_json, {}, true) }
+  let(:contentful_image_asset) { Contentful::Asset.new(image_asset_json, {}, true) }
+
+  let(:video_asset_json) do
+    {
+      'sys' => {
+        'space' => { 'sys' => { 'type' => 'Link', 'linkType' => 'Space', 'id' => 'spaceId' } },
+        'id' => 'itemId',
+        'type' => 'Asset',
+        'createdAt' => '2019-02-12T23:28:33.756Z',
+        'updatedAt' => '2019-02-20T02:50:59.780Z',
+        'environment' => { 'sys' => { 'id' => 'development', 'type' => 'Link', 'linkType' => 'Environment' } },
+        'revision' => 3
+      },
+      'fields' => {
+        'title' => { 'en-NZ' => 'Video of a tuatara' },
+        'description' => { 'en-NZ' => 'Video description' },
+        'file' => {
+          'en-NZ' => {
+            'url' => 'videoUrl',
+            'details' => { 'size' => 196_189 },
+            'fileName' => 'Tuatara.mp4',
+            'contentType' => 'video/mp4'
+          }
+        }
+      }
+    }
+  end
+  let(:contentful_video_asset) { Contentful::Asset.new(video_asset_json, {}, true) }
 
   describe '#type' do
     context 'when the item is an entry' do
@@ -66,7 +94,7 @@ RSpec.describe Consyncful::ItemMapper do
     end
 
     context 'when the item is an asset' do
-      let(:item) { Consyncful::ItemMapper.new(contentful_asset) }
+      let(:item) { Consyncful::ItemMapper.new(contentful_image_asset) }
 
       it 'type returns asset' do
         expect(item.type).to eq 'asset'
@@ -133,8 +161,8 @@ RSpec.describe Consyncful::ItemMapper do
       end
     end
 
-    context 'when the item is an asset' do
-      let(:item) { Consyncful::ItemMapper.new(contentful_asset) }
+    context 'when the item is an image asset' do
+      let(:item) { Consyncful::ItemMapper.new(contentful_image_asset) }
 
       it 'returns the correct file details' do
         expect(item.mapped_fields('en-NZ')[:file]).to include(
@@ -145,12 +173,29 @@ RSpec.describe Consyncful::ItemMapper do
         )
       end
     end
+
+    context 'when the item is a video asset' do
+      let(:item)          { Consyncful::ItemMapper.new(contentful_video_asset) }
+      let(:ffmpeg_double) { double(FFMPEG::Movie, duration: 33) }
+
+      it 'returns the correct file details' do
+        allow(FFMPEG::Movie).to receive(:new).and_return(ffmpeg_double)
+
+        expect(item.mapped_fields('en-NZ')[:file]).to include(
+          'url' => 'videoUrl',
+          'details' => { 'size' => 196_189 },
+          'fileName' => 'Tuatara.mp4',
+          'contentType' => 'video/mp4',
+          'videoDuration' => 33
+        )
+      end
+    end
   end
 
   describe '#deletion?' do
     it 'returns false when the item is an Entry or Asset' do
       expect(Consyncful::ItemMapper.new(contentful_entry).deletion?).to eq false
-      expect(Consyncful::ItemMapper.new(contentful_asset).deletion?).to eq false
+      expect(Consyncful::ItemMapper.new(contentful_image_asset).deletion?).to eq false
     end
 
     context 'when the item is a DeletedEntry or an DeletedAsset' do
@@ -176,3 +221,4 @@ RSpec.describe Consyncful::ItemMapper do
     end
   end
 end
+# rubocop:enable Metrics/BlockLength

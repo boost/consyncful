@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'streamio-ffmpeg'
+
 module Consyncful
   class ItemMapper
     def initialize(item)
@@ -32,7 +34,7 @@ module Consyncful
         assign_field(fields, field, value)
       end
 
-      fields[:file] = raw_file(locale) if type == 'asset'
+      map_file_fields(fields, locale)
 
       fields
     end
@@ -75,6 +77,24 @@ module Consyncful
       else
         hash[field] = value
       end
+    end
+
+    def map_file_fields(fields, locale)
+      return fields unless type == 'asset'
+
+      file = raw_file(locale)
+      fields[:file] = add_video_metadata(file)
+
+      fields
+    end
+
+    def add_video_metadata(file)
+      return file unless file['contentType'].include?('video')
+
+      video = FFMPEG::Movie.new("https:#{file['url']}")
+      file['videoDuration'] = video.duration
+
+      file
     end
   end
 end

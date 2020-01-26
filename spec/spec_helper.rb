@@ -3,6 +3,7 @@
 require 'bundler/setup'
 require 'consyncful'
 require 'database_cleaner'
+require 'pry'
 
 Mongoid.load!('spec/support/mongoid.yml', :test)
 
