@@ -2,6 +2,7 @@ PATH
   remote: .
   specs:
     consyncful (0.3.1)
+      activemodel (~> 5.2.4)
       contentful (>= 2.11.1, < 3.0.0)
       mongoid (>= 7.0.2, < 8.0.0)
       rainbow
@@ -9,17 +10,17 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    activemodel (6.0.2.1)
-      activesupport (= 6.0.2.1)
-    activesupport (6.0.2.1)
+    activemodel (5.2.4.1)
+      activesupport (= 5.2.4.1)
+    activesupport (5.2.4.1)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 0.7, < 2)
       minitest (~> 5.1)
       tzinfo (~> 1.1)
-      zeitwerk (~> 2.2)
     addressable (2.7.0)
       public_suffix (>= 2.0.2, < 5.0)
-    bson (4.7.0)
+    ast (2.4.0)
+    bson (4.7.1)
     concurrent-ruby (1.1.5)
     contentful (2.15.2)
       http (> 0.8, < 5.0)
@@ -44,13 +45,17 @@ GEM
       ffi-compiler (>= 1.0, < 2.0)
     i18n (1.8.2)
       concurrent-ruby (~> 1.0)
+    jaro_winkler (1.5.4)
     minitest (5.14.0)
-    mongo (2.11.2)
-      bson (>= 4.6.0, < 5.0.0)
+    mongo (2.11.3)
+      bson (>= 4.4.2, < 5.0.0)
     mongoid (7.0.5)
       activemodel (>= 5.1, < 6.1)
       mongo (>= 2.5.1, < 3.0.0)
     multi_json (1.14.1)
+    parallel (1.19.1)
+    parser (2.7.0.2)
+      ast (~> 2.4.0)
     public_suffix (4.0.3)
     rainbow (3.0.0)
     rake (10.5.0)
@@ -65,15 +70,23 @@ GEM
       rspec-support (~> 3.9.0)
     rspec-mocks (3.9.1)
       diff-lcs (>= 1.2.0, < 2.0)
-      rspec-support (~> 3.9.0)
-    rspec-support (3.9.2)
+      rspec-support (~> 3.8.0)
+    rspec-support (3.8.0)
+    rubocop (0.79.0)
+      jaro_winkler (~> 1.5.1)
+      parallel (~> 1.10)
+      parser (>= 2.7.0.1)
+      rainbow (>= 2.2.2, < 4.0)
+      ruby-progressbar (~> 1.7)
+      unicode-display_width (>= 1.4.0, < 1.7)
+    ruby-progressbar (1.10.1)
     thread_safe (0.3.6)
     tzinfo (1.2.6)
       thread_safe (~> 0.1)
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.6)
-    zeitwerk (2.2.2)
+    unicode-display_width (1.6.1)
 
 PLATFORMS
   ruby
@@ -84,6 +97,7 @@ DEPENDENCIES
   database_cleaner
   rake (~> 10.0)
   rspec (~> 3.0)
+  rubocop (= 0.79.0)
 
 BUNDLED WITH
    2.1.0

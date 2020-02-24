@@ -4,6 +4,12 @@ language: ruby
 cache: bundler
 rvm:
   - 2.4.9
+  - 2.5.1
+  - 2.6.5
 before_install: gem install bundler -v 2.1.0
 services:
   - mongodb
+
+script: 
+  - bundle exec rake spec
+  - bundle exec rubocop -P
