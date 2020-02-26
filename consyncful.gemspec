@@ -36,7 +36,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rspec', '~> 3.0'
   spec.add_development_dependency 'rubocop', '0.79.0'
 
-  spec.add_dependency 'activemodel', '~> 5.2.4'
   spec.add_dependency 'contentful', ['>=2.11.1', '<3.0.0']
   spec.add_dependency 'mongoid', ['>=7.0.2', '<8.0.0']
   spec.add_dependency 'rainbow'
