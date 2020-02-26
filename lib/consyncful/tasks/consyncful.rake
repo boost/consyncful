@@ -19,12 +19,19 @@ namespace :consyncful do
   end
 
   task update_model_names: [:environment] do
-    Rails.application.eager_load!
+    if Object.const_defined?('Zeitwerk::Loader') && Rails.application.config.autoloader.to_s == 'zeitwerk'
+      Zeitwerk::Loader.eager_load_all
+    else
+      Rails.application.eager_load!
+    end
+
     puts Rainbow('Updating model names:').blue
+
     Consyncful::Base.model_map.each do |contentful_name, constant|
       puts Rainbow("#{contentful_name}: #{constant}").yellow
       Consyncful::Base.where(contentful_type: contentful_name).update_all(_type: constant.to_s)
     end
+
     Consyncful::Base.where(:contentful_type.nin => Consyncful::Base.model_map.keys).update_all(_type: 'Consyncful::Base')
   end
 end
