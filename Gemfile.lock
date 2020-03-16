@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    consyncful (0.3.2)
+    consyncful (0.3.3)
       contentful (>= 2.11.1, < 3.0.0)
       mongoid (>= 7.0.2, < 8.0.0)
       rainbow
@@ -20,7 +20,7 @@ GEM
     addressable (2.7.0)
       public_suffix (>= 2.0.2, < 5.0)
     ast (2.4.0)
-    bson (4.7.1)
+    bson (4.8.2)
     concurrent-ruby (1.1.6)
     contentful (2.15.2)
       http (> 0.8, < 5.0)
@@ -40,25 +40,25 @@ GEM
       http-parser (~> 1.2.0)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
-    http-form_data (2.2.0)
+    http-form_data (2.3.0)
     http-parser (1.2.1)
       ffi-compiler (>= 1.0, < 2.0)
     i18n (1.8.2)
       concurrent-ruby (~> 1.0)
     jaro_winkler (1.5.4)
     minitest (5.14.0)
-    mongo (2.11.3)
+    mongo (2.11.4)
       bson (>= 4.4.2, < 5.0.0)
-    mongoid (7.0.5)
+    mongoid (7.1.0)
       activemodel (>= 5.1, < 6.1)
-      mongo (>= 2.5.1, < 3.0.0)
+      mongo (>= 2.7.0, < 3.0.0)
     multi_json (1.14.1)
     parallel (1.19.1)
     parser (2.7.0.2)
       ast (~> 2.4.0)
     public_suffix (4.0.3)
     rainbow (3.0.0)
-    rake (10.5.0)
+    rake (13.0.1)
     rspec (3.9.0)
       rspec-core (~> 3.9.0)
       rspec-expectations (~> 3.9.0)
@@ -87,7 +87,7 @@ GEM
       unf_ext
     unf_ext (0.0.7.6)
     unicode-display_width (1.6.1)
-    zeitwerk (2.2.2)
+    zeitwerk (2.3.0)
 
 PLATFORMS
   ruby
@@ -96,7 +96,7 @@ DEPENDENCIES
   bundler (~> 2)
   consyncful!
   database_cleaner
-  rake (~> 10.0)
+  rake (~> 13.0)
   rspec (~> 3.0)
   rubocop (= 0.79.0)
 
