@@ -21,6 +21,8 @@ GEM
       public_suffix (>= 2.0.2, < 5.0)
     ast (2.4.0)
     bson (4.8.2)
+    byebug (11.0.1)
+    coderay (1.1.2)
     concurrent-ruby (1.1.6)
     contentful (2.15.2)
       http (> 0.8, < 5.0)
@@ -46,6 +48,7 @@ GEM
     i18n (1.8.2)
       concurrent-ruby (~> 1.0)
     jaro_winkler (1.5.4)
+    method_source (0.9.2)
     minitest (5.14.0)
     mongo (2.11.4)
       bson (>= 4.4.2, < 5.0.0)
@@ -56,6 +59,12 @@ GEM
     parallel (1.19.1)
     parser (2.7.0.2)
       ast (~> 2.4.0)
+    pry (0.12.2)
+      coderay (~> 1.1.0)
+      method_source (~> 0.9.0)
+    pry-byebug (3.7.0)
+      byebug (~> 11.0)
+      pry (~> 0.10)
     public_suffix (4.0.3)
     rainbow (3.0.0)
     rake (13.0.1)
@@ -96,6 +105,7 @@ DEPENDENCIES
   bundler (~> 2)
   consyncful!
   database_cleaner
+  pry-byebug
   rake (~> 13.0)
   rspec (~> 3.0)
   rubocop (= 0.79.0)

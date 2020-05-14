@@ -8,6 +8,10 @@ RSpec.describe Consyncful::Base do
 
     references_many :foos
     references_one :bar
+
+    indexes do
+      index({ status: 1 }, background: true)
+    end
   end
 
   class self::TestContentfulType2 < Consyncful::Base
@@ -45,6 +49,21 @@ RSpec.describe Consyncful::Base do
 
     it 'creates a polymorphic belongs-to to other contentful models' do
       expect(referencing_item.bar).to eq referenced_item
+    end
+  end
+
+  describe '.indexes' do
+    it 'creates defines an index' do
+      expect(test_klass.index_specifications.first).to be_a(Mongoid::Indexable::Specification)
+    end
+
+    it 'defines an index with the provided attributes' do
+      expect(test_klass.index_specifications.first.fields).to include :status
+      expect(test_klass.index_specifications.first.options[:background]).to eq true
+    end
+
+    it 'defines an index on the base class' do
+      expect(Consyncful::Base.index_specifications.first.klass).to eq RSpec::ExampleGroups::ConsyncfulBase::TestContentfulType
     end
   end
 end

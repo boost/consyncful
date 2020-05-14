@@ -28,5 +28,9 @@ module Consyncful
     def self.references_one(name)
       belongs_to name.to_sym, optional: true, class_name: 'Consyncful::Base'
     end
+
+    def self.indexes
+      yield
+    end
   end
 end
