@@ -14,10 +14,9 @@ module Consyncful
     end
 
     def type
-      if @item.type == 'Entry'
-        @item.content_type.id
-      elsif @item.type == 'Asset'
-        'asset'
+      case @item.type
+      when 'Entry' then @item.content_type.id
+      when 'Asset' then 'asset'
       end
     end
 
