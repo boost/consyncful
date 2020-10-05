@@ -36,13 +36,11 @@ module Consyncful
     private
 
     def generic_fields
-      fields = {}
-      fields[:created_at] = @item.created_at
-      fields[:updated_at] = @item.updated_at
-      fields[:revision] = @item.revision
-      fields[:contentful_type] = type
-      fields[:synced_at] = Time.current
-      fields
+      { created_at: @item.created_at,
+        updated_at: @item.updated_at,
+        revision: @item.revision,
+        contentful_type: type,
+        synced_at: Time.current }
     end
 
     def localized_fields(default_locale)
@@ -51,9 +49,10 @@ module Consyncful
       @item.fields_with_locales.each do |field, value_with_locales|
         value_with_locales.each do |locale_code, value|
           next if value.is_a? Contentful::File # assets are handeled below
-    
-          fieldname = locale_code == default_locale.to_sym ? field : "#{field}_#{locale_code.to_s.underscore}".to_sym
-          assign_field(fields, fieldname, value)
+
+          field_name = localized_field_name(field, locale_code, default_locale)
+          field_name, value = mapped_field_entry_for(field_name, value)
+          fields[field_name] = value
         end
       end
 
@@ -65,11 +64,18 @@ module Consyncful
       files_by_locale = @item.raw.dig('fields', 'file') || {}
 
       files_by_locale.each do |locale_code, details|
-        fieldname = locale_code == default_locale ? 'file' : "file_#{locale_code.to_s.underscore}"
-        fields[fieldname.to_sym] = details
+        field_name = localized_field_name('file', locale_code, default_locale)
+        fields[field_name.to_sym] = details
       end
 
       fields
+    end
+
+    # Suffixes the field with the locale unless it's the default locale.
+    def localized_field_name(field, locale_code, default_locale)
+      return field if locale_code == default_locale.to_sym
+
+      "#{field}_#{locale_code.to_s.underscore}".to_sym
     end
 
     def reference_value?(value)
@@ -84,14 +90,14 @@ module Consyncful
       value.is_a?(Array) && single_reference?(value.first)
     end
 
-    def assign_field(hash, field, value)
+    def mapped_field_entry_for(field, value)
       if single_reference?(value)
-        hash[ActiveSupport::Inflector.foreign_key(field).to_sym] = value.id
+        [ActiveSupport::Inflector.foreign_key(field).to_sym, value.id]
       elsif many_reference?(value)
         ids_field_name = field.to_s.singularize + '_ids' # fk field name
-        hash[ids_field_name.to_sym] = value.map(&:id)
+        [ids_field_name.to_sym, value.map(&:id)]
       else
-        hash[field] = value
+        [field, value]
       end
     end
   end
