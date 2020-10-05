@@ -22,7 +22,9 @@ module Consyncful
     def self.references_many(name)
       has_and_belongs_to_many name.to_sym, class_name: 'Consyncful::Base', inverse_of: nil do
         def in_order
-          _target.to_a.sort_by { |a| _base[foreign_key].index(a.id) }
+          _target.to_a.sort_by do |reference|
+            _base[foreign_key].index(reference.id)
+          end
         end
       end
     end
