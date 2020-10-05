@@ -20,7 +20,7 @@ module Consyncful
     yield(configuration)
   end
 
-  # Rails configurations for Consynful
+  # Handles Rails configurations for Consynful
   class Configuration
     attr_accessor :contentful_client_options, :locale
 
