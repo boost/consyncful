@@ -148,7 +148,7 @@ end
 
 ```ruby
 Consyncful::Sync.after_run do |updated_ids|
-  #invalidate cache for updated_ids
+  #invalidate cache for updated_ids, or something
 end
 ```
 
