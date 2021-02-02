@@ -134,6 +134,24 @@ Because all contentful models are stored as polymorphic subtypes of Consyncful::
   Consyncful::Base.where(title: 'a title') # [ #<ModelName>, #<OtherModelName> ]
 ```
 
+### Sync callbacks 
+
+You may want to attach some application logic to happen before or after a sync run, for example to update caches or something. 
+
+Callbacks can be registered using:
+
+```ruby
+Consyncful::Sync.before_run do
+  #do something before the run
+end
+```
+
+```ruby
+Consyncful::Sync.after_run do |updated_ids|
+  #invalidate cache for updated_ids
+end
+```
+
 ## Limitations
 
 ### Locales

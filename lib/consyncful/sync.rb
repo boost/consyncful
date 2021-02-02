@@ -10,7 +10,7 @@ module Consyncful
     include Mongoid::Document
     include Hooks
 
-    define_hook :before_run, halts_on_falsey: true
+    define_hook :before_run
     define_hook :after_run
 
     DEFAULT_LOCALE = 'en-NZ'
