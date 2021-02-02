@@ -3,10 +3,15 @@
 require 'rainbow'
 require 'consyncful/item_mapper'
 require 'consyncful/stats'
+require 'hooks'
 
 module Consyncful
   class Sync
     include Mongoid::Document
+    include Hooks
+
+    define_hook :before_run, halts_on_falsey: true
+    define_hook :after_run
 
     DEFAULT_LOCALE = 'en-NZ'
 
@@ -29,12 +34,13 @@ module Consyncful
     end
 
     def run
+      run_hook :before_run
       stats = Consyncful::Stats.new
       load_all_models
 
       sync = start_sync
 
-      sync_items(sync, stats)
+      changed_ids = sync_items(sync, stats)
 
       drop_stale
 
@@ -42,6 +48,7 @@ module Consyncful
       self.last_run_at = Time.current
       save
       stats.print_stats
+      run_hook :after_run, changed_ids
     end
 
     private
@@ -63,11 +70,13 @@ module Consyncful
     end
 
     def sync_items(sync, stats)
+      ids = []
       sync.each_page do |page|
         page.items.each do |item|
-          sync_item(ItemMapper.new(item), stats)
+          ids << sync_item(ItemMapper.new(item), stats)
         end
       end
+      ids
     end
 
     def sync_item(item, stats)
@@ -77,6 +86,7 @@ module Consyncful
       else
         create_or_update_model(item, stats)
       end
+      item.id
     end
 
     def delete_model(id, stats)
