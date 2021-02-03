@@ -142,13 +142,13 @@ Callbacks can be registered using:
 
 ```ruby
 Consyncful::Sync.before_run do
-  #do something before the run
+  # do something before the run
 end
 ```
 
 ```ruby
 Consyncful::Sync.after_run do |updated_ids|
-  #invalidate cache for updated_ids, or something
+  # invalidate cache for updated_ids, or something
 end
 ```
 
