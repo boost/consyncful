@@ -2,18 +2,15 @@
 
 Contentful -> local database synchronisation for Rails
 
-Requesting complicated models from the Contentful Delivery API in Rails applications is often
-too slow, and makes testing applications painful. Consyncful uses Contentful's syncronisation API 
-to keep a local copy of the entire content in a Mongo database up to date.
+Requesting complicated models from the Contentful Delivery API in Rails applications is often too slow, and makes testing applications painful. Consyncful uses Contentful's synchronisation API to keep a local, up-to-date copy of the entire content in a Mongo database.
 
-Once the content is availble locally, finding and interact with contentful data is as easy as 
-using [Mongoid](https://docs.mongodb.com/mongoid/current/tutorials/mongoid-documents/) ODM. 
+Once the content is available locally, finding and interact with contentful data is as easy as using [Mongoid](https://docs.mongodb.com/mongoid/current/tutorials/mongoid-documents/) ODM.
 
-This gem doesn't provide any intergration with the management api or any way to update contentful models from the local store. It is strictly read only.
+This gem doesn't provide any integration with the management API, or any way to update Contentful models from the local store. It is strictly read only.
 
 ## Why do I have to use MongoDB?
 
-Consyncful currently only supports Mongoid ODM because models have dynamic schemas. And that's all we've had a chance to work out so far. :) 
+Consyncful currently only supports Mongoid ODM because models have dynamic schemas. And that's all we've had a chance to work out so far. :)
 The same pattern might be able to be extended to work with ActiveRecord, but having to migrate the local database as well as your contentful content type's seems tedious.
 
 ## Installation
@@ -28,12 +25,13 @@ And then execute:
 
     $ bundle
 
-If you don't already use mongoid, generate a mongoid.yml by running:
+If you don't already use Mongoid, generate a mongoid.yml by running:
 
     $ rake g mongoid:config
 
 Add an initializer:
-Consyncful uses [contentful.rb](https://github.com/contentful/contentful.rb) so client options are as documented there.
+
+Consyncful uses [contentful.rb](https://github.com/contentful/contentful.rb); client options are as documented there.
 ```ruby
   Consyncful.configure do |config|
     config.locale = 'en-NZ'
@@ -49,7 +47,7 @@ Consyncful uses [contentful.rb](https://github.com/contentful/contentful.rb) so 
 
 ## Usage
 
-### Creating contentful models in your rails app
+### Creating contentful models in your Rails app
 
 Create models by inheriting from `Consyncful::Base`
 
@@ -59,9 +57,9 @@ class ModelName < Consyncful::Base
 end
 ```
 
-Model fields will be dynamicly assigned, but mongoid dynamic fields are not accessible if the entry has an empty field. If you want the accessor methods to be reliably available for fields it is recommended to define the fields in the model:
+Model fields will be dynamically assigned, but Mongoid dynamic fields are not accessible if the entry has an empty field. If you want the accessor methods to be reliably available for fields it is recommended to define the fields in the model:
 
-```ruby 
+```ruby
 class ModelName < Consyncful::Base
   contentful_model_name 'contentfulTypeName'
 
@@ -70,9 +68,9 @@ class ModelName < Consyncful::Base
 end
 ```
 
-Contentful reference fields are a bit special compared with standard mongoid associations, Consyncful provides the following helpers to set up the correct relationships:
+Contentful reference fields are a bit special compared with standard Mongoid associations. Consyncful provides the following helpers to set up the correct relationships:
 
-```ruby 
+```ruby
 class ModelWithReferences < Consyncful::Base
   contentful_model_name 'contentfulTypeName'
 
@@ -81,26 +79,26 @@ class ModelWithReferences < Consyncful::Base
 end
 ```
 
-### Syncronizing contentful data
+### Synchronizing contentful data
 
-To run a syncronization process run:
+To run a synchronization process run:
 
     $ rake consyncful:sync
 
-The first time you run this it will download all the contentful content, it will then check every 15 seconds for changes to the content and update/delete records in the database when changes are made in contentful.
+The first time you run this it will download all the Contentful content. It will then check every 15 seconds for changes to the content and update/delete records in the database when changes are made in Contentful.
 
-If you want to syncronise from scratch run:
+If you want to synchronise from scratch, run:
 
     $ rake consyncful:refresh
 
 It is recommended to refresh your data if you change model names.
 
-Now you've synced your data, it is all available via your rails models
+Now you've synced your data, it is all available via your Rails models.
 
 ### Finding and interacting with models
 
 #### Querying
-Models are available using standard mongoid [queries](https://docs.mongodb.com/mongoid/current/tutorials/mongoid-queries/).
+Models are available using standard Mongoid [queries](https://docs.mongodb.com/mongoid/current/tutorials/mongoid-queries/).
 
 ```ruby
 instance = ModelName.find_by(instance: 'foo')
@@ -109,7 +107,7 @@ instance.is_awesome # true
 ```
 
 #### References
-References work like you woule expect:
+References work like you would expect:
 
 ```ruby
 
@@ -120,23 +118,23 @@ instance.other_things # all the referenced things, polymorphic, so might be diff
 ```
 
 **Except**:
-`references_many` associations return objects in a different order from how they are ordered in contentful. If you want them in the order they appare in contentful, use the `.in_order` helper:
+`references_many` associations return objects in a different order from how they are ordered in Contentful. If you want them in the order they appear in Contentful, use the `.in_order` helper:
 
 ```ruby
-instance.other_things.in_order # ordered the same as in contentful
+instance.other_things.in_order # ordered the same as in Contentful
 ```
 
-#### Finding entrys from different content types
+#### Finding entries from different content types
 
-Because all contentful models are stored as polymorphic subtypes of Consyncful::Base, you can query all entries without knowing what type you are looking for:
+Because all Contentful models are stored as polymorphic subtypes of `Consyncful::Base`, you can query all entries without knowing what type you are looking for:
 
 ```ruby
   Consyncful::Base.where(title: 'a title') # [ #<ModelName>, #<OtherModelName> ]
 ```
 
-### Sync callbacks 
+### Sync callbacks
 
-You may want to attach some application logic to happen before or after a sync run, for example to update caches or something. 
+You may want to attach some application logic to happen before or after a sync run, for example to update caches.
 
 Callbacks can be registered using:
 
