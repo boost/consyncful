@@ -5,7 +5,6 @@ require 'rainbow'
 module Consyncful
   ##
   # Responsible for recording changes during a sync for outputting in logs
-
   class Stats
     def initialize
       @stats = {

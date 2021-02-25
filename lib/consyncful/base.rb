@@ -4,7 +4,6 @@ module Consyncful
   ##
   # Provides common functionality of Mongoid models created from contentful
   # entries
-
   class Base
     include Mongoid::Document
     include Mongoid::Attributes::Dynamic

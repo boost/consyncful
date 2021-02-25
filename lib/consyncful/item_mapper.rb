@@ -2,9 +2,8 @@
 
 module Consyncful
   ##
-  # Responsible for mapping an update received from Contentfuls
-  # syncronisation API into useful fields for consyncful.
-
+  # Responsible for mapping an update received from Contentfuls syncronisation
+  # API into useful fields for Consyncful::PersistedItem to store in the database.
   class ItemMapper
     def initialize(item)
       @item = item

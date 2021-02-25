@@ -15,8 +15,6 @@ module Consyncful
   # there should only ever be one in the database
   #
   # Is also the entrypoint of a Syncronization run
-  #
-
   class Sync
     include Mongoid::Document
     include Hooks
@@ -34,7 +32,6 @@ module Consyncful
     ##
     # Delete the previous sync chains from database and create a fresh one.
     # Used to completely resync all items from Contentful.
-    #
     def self.fresh
       destroy_all
       latest
@@ -43,7 +40,6 @@ module Consyncful
     ##
     # Makes sure that the database contains only records that have been provided
     # during this chain of syncronisation.
-
     def drop_stale
       stale = Base.where(:sync_id.ne => id, :sync_id.exists => true)
       puts Rainbow("Dropping #{stale.count} records that haven't been touched in this sync").red
@@ -52,7 +48,6 @@ module Consyncful
 
     ##
     # Entry point to a syncronization run. Is responsible for updating Sync state
-
     def run
       run_hook :before_run
 
