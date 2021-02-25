@@ -7,14 +7,20 @@ require 'consyncful/stats'
 require 'hooks'
 
 module Consyncful
+  ##
+  # A mongoid model that stores the state of a syncronisation feed. Stores the
+  # next URL provided by Contentfuls Sync API.
+  #
+  # Sync's are affectivly singletons,
+  # there should only ever be one in the database
+  #
+  # Is also the entrypoint of a Syncronization run
   class Sync
     include Mongoid::Document
     include Hooks
 
     define_hook :before_run
     define_hook :after_run
-
-    DEFAULT_LOCALE = 'en-NZ'
 
     field :next_url
     field :last_run_at, type: DateTime
@@ -23,17 +29,25 @@ module Consyncful
       last || new
     end
 
+    ##
+    # Delete the previous sync chains from database and create a fresh one.
+    # Used to completely resync all items from Contentful.
     def self.fresh
       destroy_all
       latest
     end
 
+    ##
+    # Makes sure that the database contains only records that have been provided
+    # during this chain of syncronisation.
     def drop_stale
       stale = Base.where(:sync_id.ne => id, :sync_id.exists => true)
       puts Rainbow("Dropping #{stale.count} records that haven't been touched in this sync").red
       stale.destroy
     end
 
+    ##
+    # Entry point to a syncronization run. Is responsible for updating Sync state
     def run
       run_hook :before_run
 
