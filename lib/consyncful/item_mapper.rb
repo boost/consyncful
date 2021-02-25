@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 module Consyncful
+  ##
+  # Responsible for mapping an update recieved from Contentfuls
+  # syncronisation API into useful fields for consyncful.
+
   class ItemMapper
     def initialize(item)
       @item = item
