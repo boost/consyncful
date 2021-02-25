@@ -51,7 +51,7 @@ module Consyncful
     end
 
     ##
-    # Entry point to a syncronization run. Is reponsible for updating Sync state
+    # Entry point to a syncronization run. Is responsible for updating Sync state
 
     def run
       run_hook :before_run
