@@ -2,7 +2,7 @@
 
 module Consyncful
   ##
-  # Responsible for mapping an update recieved from Contentfuls
+  # Responsible for mapping an update received from Contentfuls
   # syncronisation API into useful fields for consyncful.
 
   class ItemMapper
