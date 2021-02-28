@@ -2,8 +2,8 @@
 
 module Consyncful
   ##
-  # Takes a mapped item from contentful and creates/updates/deletes the relevant
-  # model in the local database.
+  # Takes a mapped item from Contentful and creates/updates/deletes
+  # the relevant model in the local database.
   class PersistedItem
     DEFAULT_LOCALE = 'en-NZ'
 

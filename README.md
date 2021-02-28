@@ -150,11 +150,9 @@ Consyncful::Sync.after_run do |updated_ids|
 end
 ```
 
-## Limitations
+### Using Locales for specific fields
 
-### Locales
-
-Current Consyncful only uses one globally configured locale to map the data to the database.
+If fields have multiple locales then the default locale will be mapped to the field name. Additional locales will have a suffix (lower snake case) on the field name. e.g title (default), title_mi_nz (New Zealand Maori mi-NZ)
 
 ## Development
 
