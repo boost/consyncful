@@ -2,8 +2,8 @@
 
 module Consyncful
   ##
-  # Responsible for mapping an update received from Contentfuls syncronisation
-  # API into useful fields for Consyncful::PersistedItem to store in the database.
+  # Responsible for mapping an update received from Contentful's syncronisation API
+  # into useful fields for Consyncful::PersistedItem to store in the database.
   class ItemMapper
     def initialize(item)
       @item = item
@@ -25,17 +25,11 @@ module Consyncful
       @item.id
     end
 
-    def mapped_fields(locale)
+    def mapped_fields(default_locale)
       fields = generic_fields
 
-      @item.fields_with_locales.each do |field, value_with_locales|
-        value = value_with_locales[locale.to_sym]
-        next if value.is_a? Contentful::File # it is special
-
-        assign_field(fields, field, value)
-      end
-
-      fields[:file] = raw_file(locale) if type == 'asset'
+      fields.merge!(localized_fields(default_locale))
+      fields.merge!(localized_asset_fields(default_locale)) if type == 'asset'
 
       fields
     end
@@ -52,9 +46,31 @@ module Consyncful
       fields
     end
 
-    def raw_file(locale)
-      file_json = @item.raw.fetch('fields', {}).fetch('file', nil)
-      file_json[locale] unless file_json.nil?
+    def localized_fields(default_locale)
+      fields = {}
+
+      @item.fields_with_locales.each do |field, value_with_locales|
+        value_with_locales.each do |locale_code, value|
+          next if value.is_a? Contentful::File # assets are handeled below
+    
+          fieldname = locale_code == default_locale.to_sym ? field : "#{field}_#{locale_code.to_s.underscore}".to_sym
+          assign_field(fields, fieldname, value)
+        end
+      end
+
+      fields
+    end
+
+    def localized_asset_fields(default_locale)
+      fields = {}
+      files_by_locale = @item.raw.dig('fields', 'file') || {}
+
+      files_by_locale.each do |locale_code, details|
+        fieldname = locale_code == default_locale ? 'file' : "file_#{locale_code.to_s.underscore}"
+        fields[fieldname.to_sym] = details
+      end
+
+      fields
     end
 
     def reference_value?(value)

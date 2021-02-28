@@ -17,6 +17,7 @@ RSpec.describe Consyncful::ItemMapper do
       },
       'fields' => {
         'description' => { 'en-NZ' => 'Govt loan reg text' },
+        'fieldWithLocales' => { 'en-NZ' => 'English value', 'mi-NZ' => 'Maori value' },
         'text' => {
           'en-NZ' => {
             'nodeType' => 'document',
@@ -48,6 +49,12 @@ RSpec.describe Consyncful::ItemMapper do
             'url' => 'imageUrl',
             'details' => { 'size' => 196_189, 'image' => { 'width' => 1441, 'height' => 595 } },
             'fileName' => 'Hero image.jpg',
+            'contentType' => 'image/jpeg'
+          },
+          'mi-NZ' => {
+            'url' => 'maoriImageUrl',
+            'details' => { 'size' => 196_189, 'image' => { 'width' => 1441, 'height' => 595 } },
+            'fileName' => 'Maori hero image.jpg',
             'contentType' => 'image/jpeg'
           }
         }
@@ -84,9 +91,10 @@ RSpec.describe Consyncful::ItemMapper do
 
   describe '#mapped_fields' do
     let(:item) { Consyncful::ItemMapper.new(contentful_entry) }
+    let(:default_locale) { 'en-NZ' }
 
     it 'returns the generic fields' do
-      expect(item.mapped_fields('en-NZ')).to include(
+      expect(item.mapped_fields(default_locale)).to include(
         created_at: DateTime.parse('2019-02-20T00:50:17.357Z'),
         updated_at: DateTime.parse('2019-02-20T00:50:50.052Z'),
         revision: 43,
@@ -97,17 +105,24 @@ RSpec.describe Consyncful::ItemMapper do
     it 'returns a field called synced_at with the current time' do
       dummy_time = double('time')
       expect(Time).to receive(:current).and_return(dummy_time)
-      expect(item.mapped_fields('en-NZ')).to include(synced_at: dummy_time)
+      expect(item.mapped_fields(default_locale)).to include(synced_at: dummy_time)
     end
 
-    it 'returns all normal fields from the requested locale' do
-      expect(item.mapped_fields('en-NZ')).to include(
+    it 'returns all content model specific fields from the default locale' do
+      expect(item.mapped_fields(default_locale)).to include(
         description: 'Govt loan reg text',
+        field_with_locales: 'English value',
         text: {
           'nodeType' => 'document',
           'data' => {},
           'content' => [{ 'nodeType' => 'paragraph', 'content' => [{ 'nodeType' => 'text', 'value' => 'To register as a government loans client please fill in the form below.', 'marks' => [], 'data' => {} }], 'data' => {} }]
         }
+      )
+    end
+
+    it 'returns any additional locales mapped to fields with suffix of the locale code' do
+      expect(item.mapped_fields(default_locale)).to include(
+        field_with_locales_mi_nz: 'Maori value'
       )
     end
 
@@ -125,22 +140,31 @@ RSpec.describe Consyncful::ItemMapper do
       end
 
       it 'returns many refs as an array of ids in a field the the correct name for mongoid' do
-        expect(item.mapped_fields('en-NZ')).to include(many_ref_ids: %w[5MLrvU144Mg0OQIwIyeWea 11baJLRlumIIGEqOGaUW0Y])
+        expect(item.mapped_fields(default_locale)).to include(many_ref_ids: %w[5MLrvU144Mg0OQIwIyeWea 11baJLRlumIIGEqOGaUW0Y])
       end
 
       it 'returns one refs as the correct name for mongoid' do
-        expect(item.mapped_fields('en-NZ')).to include(one_ref_id: '5MLrvU144Mg0OQIwIyeWea')
+        expect(item.mapped_fields(default_locale)).to include(one_ref_id: '5MLrvU144Mg0OQIwIyeWea')
       end
     end
 
     context 'when the item is an asset' do
       let(:item) { Consyncful::ItemMapper.new(contentful_asset) }
 
-      it 'returns the correct file details' do
-        expect(item.mapped_fields('en-NZ')[:file]).to include(
+      it 'returns the correct file details for the default locale' do
+        expect(item.mapped_fields(default_locale)[:file]).to include(
           'url' => 'imageUrl',
           'details' => { 'size' => 196_189, 'image' => { 'width' => 1441, 'height' => 595 } },
           'fileName' => 'Hero image.jpg',
+          'contentType' => 'image/jpeg'
+        )
+      end
+
+      it 'returns the correct file details for any other locales' do
+        expect(item.mapped_fields(default_locale)[:file_mi_nz]).to include(
+          'url' => 'maoriImageUrl',
+          'details' => { 'size' => 196_189, 'image' => { 'width' => 1441, 'height' => 595 } },
+          'fileName' => 'Maori hero image.jpg',
           'contentType' => 'image/jpeg'
         )
       end

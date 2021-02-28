@@ -27,7 +27,7 @@ module Consyncful
       @contentful_client_options = {
         api_url: 'cdn.contentful.com'
       }
-      @locale = 'en-US'
+      @locale = 'en-NZ'
     end
   end
 
