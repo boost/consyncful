@@ -28,23 +28,8 @@ module Consyncful
     def mapped_fields(default_locale)
       fields = generic_fields
 
-      @item.fields_with_locales.each do |field, value_with_locales|
-        value_with_locales.each do |locale_code, value|
-          next if value.is_a? Contentful::File # assets are handeled below
-
-          fieldname = locale_code == default_locale.to_sym ? field : "#{field}_#{locale_code.to_s.underscore}".to_sym
-
-          assign_field(fields, fieldname, value)
-        end
-      end
-
-      if type == 'asset'
-        raw_files_by_locale.each do |locale_code, details|
-          fieldname = locale_code.to_sym == default_locale.to_sym ? :file : "file_#{locale_code.to_s.underscore}".to_sym
-
-          fields[fieldname] = details
-        end
-      end
+      fields.merge!(localized_fields(default_locale))
+      fields.merge!(localized_asset_fields(default_locale)) if type == 'asset'
 
       fields
     end
@@ -61,8 +46,31 @@ module Consyncful
       fields
     end
 
-    def raw_files_by_locale
-      @item.raw.fetch('fields', {}).fetch('file', {})
+    def localized_fields(default_locale)
+      fields = {}
+
+      @item.fields_with_locales.each do |field, value_with_locales|
+        value_with_locales.each do |locale_code, value|
+          next if value.is_a? Contentful::File # assets are handeled below
+    
+          fieldname = locale_code == default_locale.to_sym ? field : "#{field}_#{locale_code.to_s.underscore}".to_sym
+          assign_field(fields, fieldname, value)
+        end
+      end
+
+      fields
+    end
+
+    def localized_asset_fields(default_locale)
+      fields = {}
+      files_by_locale = @item.raw.dig('fields', 'file') || {}
+
+      files_by_locale.each do |locale_code, details|
+        fieldname = locale_code == default_locale ? 'file' : "file_#{locale_code.to_s.underscore}"
+        fields[fieldname.to_sym] = details
+      end
+
+      fields
     end
 
     def reference_value?(value)
