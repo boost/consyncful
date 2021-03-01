@@ -7,8 +7,8 @@ require 'consyncful/version'
 Gem::Specification.new do |spec|
   spec.name          = 'consyncful'
   spec.version       = Consyncful::VERSION
-  spec.authors       = ['Andy Anastasiadis-Gray', 'Montgomery Anderson']
-  spec.email         = ['andy@boost.co.nz', 'montgomery@boost.co.nz']
+  spec.authors       = ['Andy Anastasiadis-Gray', 'Montgomery Anderson', 'Greg Rogan']
+  spec.email         = ['andy@boost.co.nz', 'montgomery@boost.co.nz', 'greg@boost.co.nz']
 
   spec.summary       = 'Contentful to local database synchronisation for Rails'
   spec.homepage      = 'https://github.com/boost/consyncful'
