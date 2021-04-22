@@ -73,7 +73,7 @@ module Consyncful
 
     # Suffixes the field with the locale unless it's the default locale.
     def localized_field_name(field, locale_code, default_locale)
-      return field if locale_code == default_locale.to_sym
+      return field if locale_code.to_s == default_locale.to_s
 
       "#{field}_#{locale_code.to_s.underscore}".to_sym
     end
