@@ -105,4 +105,4 @@ DEPENDENCIES
   rubocop (= 0.79.0)
 
 BUNDLED WITH
-   2.1.0
+   2.1.4
