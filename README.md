@@ -154,6 +154,17 @@ end
 
 If fields have multiple locales then the default locale will be mapped to the field name. Additional locales will have a suffix (lower snake case) on the field name. e.g title (default), title_mi_nz (New Zealand Maori mi-NZ)
 
+### Configuring what Mongo database Consyncful uses
+
+You can also configure what Mongoid client Consyncful uses and the name of the collection the entries are stored under. This is useful if you want to have your consyncful data hosted in a different mongo database than your application-specific mongo database.
+
+```rb
+Consyncful.configure do |config|
+  config.mongo_client = :consyncful # defaults to :default (referencing the clients in mongoid.yml)
+  config.mongo_collection = 'contentful_models' # this is the default
+end
+```
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
