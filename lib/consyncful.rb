@@ -11,15 +11,6 @@ require 'consyncful/sync'
 require 'consyncful/railtie' if defined?(Rails)
 
 module Consyncful
-  class << self
-    attr_accessor :configuration
-  end
-
-  def self.configure
-    self.configuration ||= Configuration.new
-    yield(configuration)
-  end
-
   # Handles Rails configurations for Consynful
   class Configuration
     attr_accessor :contentful_client_options, :locale,
@@ -40,11 +31,21 @@ module Consyncful
     api_url: 'cdn.contentful.com'
   }.freeze
 
-  def self.client
-    @client ||= begin
-      options = Consyncful.configuration.contentful_client_options
-      options.reverse_merge!(DEFAULT_CLIENT_OPTIONS)
-      Contentful::Client.new(options)
+  class << self
+    def configuration
+      @configuration ||= Configuration.new
+    end
+
+    def configure
+      yield configuration
+    end
+
+    def client
+      @client ||= begin
+        options = Consyncful.configuration.contentful_client_options
+        options.reverse_merge!(DEFAULT_CLIENT_OPTIONS)
+        Contentful::Client.new(options)
+      end
     end
   end
 end
