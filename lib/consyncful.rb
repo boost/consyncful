@@ -22,13 +22,16 @@ module Consyncful
 
   # Handles Rails configurations for Consynful
   class Configuration
-    attr_accessor :contentful_client_options, :locale
+    attr_accessor :contentful_client_options, :locale,
+                  :mongo_client, :mongo_collection
 
     def initialize
       @contentful_client_options = {
         api_url: 'cdn.contentful.com'
       }
       @locale = 'en-NZ'
+      @mongo_client = :default
+      @mongo_collection = 'contentful_models'
     end
   end
 
