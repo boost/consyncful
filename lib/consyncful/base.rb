@@ -8,9 +8,10 @@ module Consyncful
     include Mongoid::Document
     include Mongoid::Attributes::Dynamic
 
-    store_in collection: 'contentful_models'
-
     cattr_accessor :model_map
+
+    store_in collection: -> { Consyncful.configuration.mongo_collection },
+             client: -> { Consyncful.configuration.mongo_client }
 
     def self.contentful_model_name(name)
       self.model_map ||= {}

@@ -8,10 +8,21 @@ Once the content is available locally, finding and interact with contentful data
 
 This gem doesn't provide any integration with the management API, or any way to update Contentful models from the local store. It is strictly read only.
 
-## Why do I have to use MongoDB?
-
-Consyncful currently only supports Mongoid ODM because models have dynamic schemas. And that's all we've had a chance to work out so far. :)
-The same pattern might be able to be extended to work with ActiveRecord, but having to migrate the local database as well as your contentful content type's seems tedious.
+- [Installation](#installation)
+- [Usage](#usage)
+  - [Creating contentful models in your Rails app](#creating-contentful-models-in-your-rails-app)
+  - [Synchronizing contentful data](#synchronizing-contentful-data)
+  - [Finding and interacting with models](#finding-and-interacting-with-models)
+    - [Querying](#querying)
+    - [References](#references)
+    - [Finding entries from different content types](#finding-entries-from-different-content-types)
+  - [Sync callbacks](#sync-callbacks)
+  - [Using Locales for specific fields](#using-locales-for-specific-fields)
+  - [Configuring what Mongo database Consyncful uses](#configuring-what-mongo-database-consyncful-uses)
+  - [Why do I have to use MongoDB?](#why-do-i-have-to-use-mongodb)
+- [Development](#development)
+- [Contributing](#contributing)
+- [License](#license)
 
 ## Installation
 
@@ -32,17 +43,17 @@ If you don't already use Mongoid, generate a mongoid.yml by running:
 Add an initializer:
 
 Consyncful uses [contentful.rb](https://github.com/contentful/contentful.rb); client options are as documented there.
-```ruby
-  Consyncful.configure do |config|
-    config.locale = 'en-NZ'
-    config.contentful_client_options = {
-      api_url: 'cdn.contentful.com',
-      space: 'space_id',
-      access_token: 'ACCESS TOKEN',
-      environment: 'master',        # optional
-      logger: Logger.new(STDOUT)    # optional for debugging
-    }
-  end
+```rb
+Consyncful.configure do |config|
+  config.locale = 'en-NZ'
+  config.contentful_client_options = {
+    api_url: 'cdn.contentful.com',
+    space: 'space_id',
+    access_token: 'ACCESS TOKEN',
+    environment: 'master',        # optional
+    logger: Logger.new(STDOUT)    # optional for debugging
+  }
+end
 ```
 
 ## Usage
@@ -129,7 +140,7 @@ instance.other_things.in_order # ordered the same as in Contentful
 Because all Contentful models are stored as polymorphic subtypes of `Consyncful::Base`, you can query all entries without knowing what type you are looking for:
 
 ```ruby
-  Consyncful::Base.where(title: 'a title') # [ #<ModelName>, #<OtherModelName> ]
+Consyncful::Base.where(title: 'a title') # [ #<ModelName>, #<OtherModelName> ]
 ```
 
 ### Sync callbacks
@@ -153,6 +164,21 @@ end
 ### Using Locales for specific fields
 
 If fields have multiple locales then the default locale will be mapped to the field name. Additional locales will have a suffix (lower snake case) on the field name. e.g title (default), title_mi_nz (New Zealand Maori mi-NZ)
+
+### Configuring what Mongo database Consyncful uses
+
+You can also configure what Mongoid client Consyncful uses and the name of the collection the entries are stored under. This is useful if you want to have your consyncful data hosted in a different mongo database than your application-specific mongo database.
+
+```rb
+Consyncful.configure do |config|
+  config.mongo_client = :consyncful # defaults to :default (referencing the clients in mongoid.yml)
+  config.mongo_collection = 'contentful_models' # this is the default
+end
+```
+
+### Why do I have to use MongoDB?
+
+Consyncful currently only supports Mongoid ODM because models have dynamic schemas. And that's all we've had a chance to work out so far. The same pattern might be able to be extended to work with ActiveRecord, but having to migrate the local database as well as your contentful content type's seems tedious.
 
 ## Development
 
