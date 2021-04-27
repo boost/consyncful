@@ -19,6 +19,8 @@ module Consyncful
     include Mongoid::Document
     include Hooks
 
+    store_in client: -> { Consyncful.configuration.mongo_client }
+
     define_hook :before_run
     define_hook :after_run
 
