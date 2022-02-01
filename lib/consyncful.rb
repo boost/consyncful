@@ -13,8 +13,11 @@ require 'consyncful/railtie' if defined?(Rails)
 module Consyncful
   # Handles Rails configurations for Consynful
   class Configuration
-    attr_accessor :contentful_client_options, :locale,
-                  :mongo_client, :mongo_collection
+    attr_accessor :contentful_client_options,
+                  :locale,
+                  :mongo_client,
+                  :mongo_collection,
+                  :content_tags
 
     def initialize
       @contentful_client_options = {
@@ -23,6 +26,7 @@ module Consyncful
       @locale = 'en-NZ'
       @mongo_client = :default
       @mongo_collection = 'contentful_models'
+      @content_tags = []
     end
   end
 

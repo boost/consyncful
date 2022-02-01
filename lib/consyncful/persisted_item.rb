@@ -22,8 +22,6 @@ module Consyncful
       end
     end
 
-    private
-
     def delete_model(id, stats)
       Base.find_by(id: id).destroy
       stats.record_deleted
@@ -31,6 +29,8 @@ module Consyncful
       puts Rainbow("Deleted record not found: #{id}").yellow
       nil
     end
+
+    private
 
     def create_or_update_model(item, sync_id, stats)
       return if item.type.nil?

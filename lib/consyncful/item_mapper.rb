@@ -5,12 +5,15 @@ module Consyncful
   # Responsible for mapping an update received from Contentful's syncronisation API
   # into useful fields for Consyncful::PersistedItem to store in the database.
   class ItemMapper
+    attr_reader :item
+
     def initialize(item)
       @item = item
     end
 
     def deletion?
-      @item.is_a?(Contentful::DeletedEntry) || @item.is_a?(Contentful::DeletedAsset)
+      @item.is_a?(Contentful::DeletedEntry) || 
+        @item.is_a?(Contentful::DeletedAsset)
     end
 
     def type
