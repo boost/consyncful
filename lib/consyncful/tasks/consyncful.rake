@@ -19,7 +19,7 @@ namespace :consyncful do
   end
 
   task update_model_names: [:environment] do
-    if Object.const_defined?('Zeitwerk::Loader') && Rails.application.config.autoloader.to_s == 'zeitwerk'
+    if Rails.autoloaders.zeitwerk_enabled?
       Zeitwerk::Loader.eager_load_all
     else
       Rails.application.eager_load!
