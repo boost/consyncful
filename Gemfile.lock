@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    consyncful (0.6.2)
+    consyncful (0.6.3)
       contentful (>= 2.11.1, < 3.0.0)
       hooks (>= 0.4.1)
       mongoid (>= 7.0.2, < 8.0.0)
