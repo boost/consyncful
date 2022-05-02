@@ -25,6 +25,11 @@ RSpec.describe Consyncful::ItemMapper do
             'content' => [{ 'nodeType' => 'paragraph', 'content' => [{ 'nodeType' => 'text', 'value' => 'To register as a government loans client please fill in the form below.', 'marks' => [], 'data' => {} }], 'data' => {} }]
           }
         }
+      },
+      'metadata' => {
+        'tags' => [
+          { 'sys' => { 'type' => 'Link', 'linkType' => 'Tag', 'id' => 'tag1' } }
+        ]
       }
     }
   end
@@ -189,6 +194,7 @@ RSpec.describe Consyncful::ItemMapper do
             'updatedAt' => '2019-02-20T18:25:21.515Z',
             'deletedAt' => '2019-02-20T18:25:21.515Z' } }
       end
+
       it 'returns true' do
         deleted_item = Contentful::DeletedEntry.new(deleted_item_json, {}, true)
         deleted_item_json['sys']['type'] = 'DeletedAsset'
@@ -196,6 +202,47 @@ RSpec.describe Consyncful::ItemMapper do
 
         expect(Consyncful::ItemMapper.new(deleted_item).deletion?).to eq true
         expect(Consyncful::ItemMapper.new(deleted_asset).deletion?).to eq true
+      end
+    end
+
+    context 'when the item is tagged to be included' do
+      let(:item_mapper) { described_class.new(contentful_entry) }
+
+      before do
+        Consyncful.configuration.ignore_content_tags = []
+      end
+
+      it 'returns true' do
+        Consyncful.configuration.content_tags = ['tag2']
+
+        expect(item_mapper.deletion?).to eq true
+      end
+
+      it 'returns false' do
+        Consyncful.configuration.content_tags = ['tag1']
+
+        expect(item_mapper.deletion?).to eq false
+      end
+    end
+
+    context 'when the item is tagged to be ignored' do
+      let(:item_mapper) { described_class.new(contentful_entry) }
+
+      before do
+        Consyncful.configuration.content_tags = []
+      end
+
+      it 'returns true' do
+        Consyncful.configuration.content_tags = []
+        Consyncful.configuration.ignore_content_tags = ['tag1']
+
+        expect(item_mapper.deletion?).to eq true
+      end
+
+      it 'returns false' do
+        Consyncful.configuration.ignore_content_tags = ['tag2']
+
+        expect(item_mapper.deletion?).to eq false
       end
     end
   end

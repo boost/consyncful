@@ -18,7 +18,7 @@ module Consyncful
                   :mongo_client,
                   :mongo_collection,
                   :content_tags,
-                  :ignored_tags
+                  :ignore_content_tags
 
     def initialize
       @contentful_client_options = {
@@ -28,7 +28,7 @@ module Consyncful
       @mongo_client = :default
       @mongo_collection = 'contentful_models'
       @content_tags = []
-      @ignored_tags = []
+      @ignore_content_tags = []
     end
   end
 

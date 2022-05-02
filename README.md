@@ -165,6 +165,26 @@ end
 
 If fields have multiple locales then the default locale will be mapped to the field name. Additional locales will have a suffix (lower snake case) on the field name. e.g title (default), title_mi_nz (New Zealand Maori mi-NZ)
 
+### Sync specific contents using [Contentful Tag](https://www.contentful.com/help/tags/).
+You can configure Consyncful to sync or ignore specific contents using Contentful Tag.
+
+```rb
+Consyncful.configure do |config|
+  # Any contents tagged with 'myTag' will be stored in the database. 
+  # Other contents without 'myTag'
+  config.content_tags = ['myTag'] # defaults to []
+end
+```
+
+Also, you can ignore contents with specific Tags.
+
+```rb
+Consyncful.configure do |config|
+  # Any contents tagged with 'ignoreTag' won't be stored in the database.
+  config.ignore_content_tags = ['ignoreTag'] # defaults to []
+end
+```
+
 ### Configuring what Mongo database Consyncful uses
 
 You can also configure what Mongoid client Consyncful uses and the name of the collection the entries are stored under. This is useful if you want to have your consyncful data hosted in a different mongo database than your application-specific mongo database.
