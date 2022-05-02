@@ -14,7 +14,8 @@ module Consyncful
     def deletion?
       @item.is_a?(Contentful::DeletedEntry) || 
         @item.is_a?(Contentful::DeletedAsset) ||
-        excluded_in_content_tags?(@item)
+        excluded_in_content_tags?(@item) ||
+        included_in_ignored_tags?(@item)
     end
 
     def type
@@ -46,6 +47,15 @@ module Consyncful
       item_tags = item._metadata[:tags].map(&:id)
 
       (Consyncful.configuration.content_tags & item_tags).empty?
+    end
+
+    def included_in_ignored_tags?(item = nil)
+      return false if item.nil?
+      return false if Consyncful.configuration.ignored_tags.empty?
+
+      item_tags = item._metadata[:tags].map(&:id)
+
+      (Consyncful.configuration.ignored_tags & item_tags).any?
     end
 
     def generic_fields
