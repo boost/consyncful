@@ -102,20 +102,9 @@ module Consyncful
       ids
     end
 
-    # TODO: This is just a prototype to determine the tags
-    # This can be moved into the item_mapper.rb class instead
     def sync_item(item_mapper, stats)
       puts Rainbow("syncing: #{item_mapper.id}").yellow
-
-      content_tags = Consyncful.configuration.content_tags
-      item_tag_ids = item_mapper.item._metadata[:tags].map(&:id)
-      persisted_item = PersistedItem.new(item_mapper, id, stats)
-
-      if content_tags.empty? || (content_tags.any? && (content_tags & item_tag_ids).any?)
-        persisted_item.persist
-      else
-        persisted_item.delete_model(item_mapper.id, stats)
-      end
+      PersistedItem.new(item_mapper, id, stats).persist
 
       item_mapper.id
     end
