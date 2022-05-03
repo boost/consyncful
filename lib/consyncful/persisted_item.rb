@@ -26,7 +26,7 @@ module Consyncful
     private
 
     def delete_model(id, stats)
-      Base.find_by(id: id).destroy
+      Base.find(id).destroy
       stats.record_deleted
     rescue Mongoid::Errors::DocumentNotFound
       puts Rainbow("Deleted record not found: #{id}").yellow
