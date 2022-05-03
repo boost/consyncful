@@ -204,45 +204,47 @@ RSpec.describe Consyncful::ItemMapper do
         expect(Consyncful::ItemMapper.new(deleted_asset).deletion?).to eq true
       end
     end
+  end
 
-    context 'when the item is tagged to be included' do
-      let(:item_mapper) { described_class.new(contentful_entry) }
+  describe '#excluded_by_tag?' do
+    let(:item_mapper) { described_class.new(contentful_entry) }
 
-      before do
-        Consyncful.configuration.ignore_content_tags = []
-      end
+    it 'returns false if content_tags and ignore_content_tags are empty' do
+      Consyncful.configuration.ignore_content_tags = []
+      Consyncful.configuration.content_tags = []
 
+      expect(item_mapper.excluded_by_tag?).to eq false
+    end
+
+    context 'when content_tags has value' do
       it 'returns true' do
         Consyncful.configuration.content_tags = ['tag2']
 
-        expect(item_mapper.deletion?).to eq true
+        expect(item_mapper.excluded_by_tag?).to eq true
       end
 
       it 'returns false' do
         Consyncful.configuration.content_tags = ['tag1']
 
-        expect(item_mapper.deletion?).to eq false
+        expect(item_mapper.excluded_by_tag?).to eq false
       end
     end
 
-    context 'when the item is tagged to be ignored' do
-      let(:item_mapper) { described_class.new(contentful_entry) }
-
+    context 'when ignore_content_tags has value' do
       before do
         Consyncful.configuration.content_tags = []
       end
 
       it 'returns true' do
-        Consyncful.configuration.content_tags = []
         Consyncful.configuration.ignore_content_tags = ['tag1']
 
-        expect(item_mapper.deletion?).to eq true
+        expect(item_mapper.excluded_by_tag?).to eq true
       end
 
       it 'returns false' do
         Consyncful.configuration.ignore_content_tags = ['tag2']
 
-        expect(item_mapper.deletion?).to eq false
+        expect(item_mapper.excluded_by_tag?).to eq false
       end
     end
   end

@@ -13,8 +13,14 @@ module Consyncful
 
     def deletion?
       @item.is_a?(Contentful::DeletedEntry) || 
-        @item.is_a?(Contentful::DeletedAsset) ||
-        tagged_content?(@item)
+        @item.is_a?(Contentful::DeletedAsset)
+    end
+
+    def excluded_by_tag?
+      return (Consyncful.configuration.content_tags & item_tag_ids).empty?      if Consyncful.configuration.content_tags.any?
+      return (Consyncful.configuration.ignore_content_tags & item_tag_ids).any? if Consyncful.configuration.ignore_content_tags.any?
+
+      false
     end
 
     def type
@@ -39,22 +45,15 @@ module Consyncful
 
     private
 
-    # rubocop:disable Metrics/AbcSize
-    def tagged_content?(item)
-      return false if item.nil?
+    def item_tag_ids
+      return [] if @item.nil?
 
-      item_tags = item._metadata[:tags]
+      item_tags = @item._metadata[:tags]
       
-      return false if item_tags.nil?
+      return [] if item_tags.nil?
       
-      item_tag_ids = item_tags.map(&:id)
-
-      return (Consyncful.configuration.content_tags & item_tag_ids).empty? if Consyncful.configuration.content_tags.any?
-      return (Consyncful.configuration.ignore_content_tags & item_tag_ids).any? if Consyncful.configuration.ignore_content_tags.any?
-
-      false
+      item_tags.map(&:id)
     end
-    # rubocop:enable Metrics/AbcSize
 
     def generic_fields
       { created_at: @item.created_at,

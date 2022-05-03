@@ -24,7 +24,7 @@ RSpec.describe Consyncful::PersistedItem do
 
   context 'when the item is a create or update' do
     let(:mapped_fields) { { field_name: 'value', other_field: 3 } }
-    let(:item) { instance_double('Consyncful::ItemMapper', deletion?: false, id: 'itemId', type: 'itemType', mapped_fields: mapped_fields) }
+    let(:item) { instance_double('Consyncful::ItemMapper', deletion?: false, excluded_by_tag?: false, id: 'itemId', type: 'itemType', mapped_fields: mapped_fields) }
     let(:instance) { instance_double('Consyncful::Base', persisted?: false, save: true, :[]= => nil, attributes: []) }
 
     before do
