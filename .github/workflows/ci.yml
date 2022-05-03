@@ -16,6 +16,10 @@ jobs:
           - 2.6.6
           - 2.7.1
           - 3.0.0
+        mongodb:
+          - 4.2
+          - 4.4
+          - 5.0
 
     name: Ruby ${{ matrix.ruby }} sample
 
@@ -28,6 +32,11 @@ jobs:
         with:
           bundler-cache: true
           ruby-version: ${{ matrix.ruby }}
+      
+      - name: Start MongoDB
+        uses: supercharge/mongodb-github-action@1.7.0
+        with:
+          mongodb-version: ${{ matrix.mongodb }}
 
       - name: Run rubocop
         run: |
