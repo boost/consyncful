@@ -34,7 +34,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'database_cleaner'
   spec.add_development_dependency 'rake', '~> 13.0'
   spec.add_development_dependency 'rspec', '~> 3.0'
-  spec.add_development_dependency 'rubocop', '0.79.0'
+  spec.add_development_dependency 'rubocop'
 
   spec.add_dependency 'contentful', ['>=2.11.1', '<3.0.0']
   spec.add_dependency 'hooks', '>=0.4.1'

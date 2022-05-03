@@ -107,7 +107,7 @@ module Consyncful
       if single_reference?(value)
         [ActiveSupport::Inflector.foreign_key(field).to_sym, value.id]
       elsif many_reference?(value)
-        ids_field_name = field.to_s.singularize + '_ids' # fk field name
+        ids_field_name = "#{field.to_s.singularize}_ids" # fk field name
         [ids_field_name.to_sym, value.map(&:id)]
       else
         [field, value]

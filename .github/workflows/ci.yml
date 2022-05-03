@@ -37,6 +37,9 @@ jobs:
         with:
           mongodb-version: ${{ matrix.mongodb }}
 
+      - name: Run rubocop
+        run: |
+          bundle exec rubocop
       - name: Run tests
         run: |
           bundle exec rspec
