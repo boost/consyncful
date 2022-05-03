@@ -102,10 +102,11 @@ module Consyncful
       ids
     end
 
-    def sync_item(item, stats)
-      puts Rainbow("syncing: #{item.id}").yellow
-      PersistedItem.new(item, id, stats).persist
-      item.id
+    def sync_item(item_mapper, stats)
+      puts Rainbow("syncing: #{item_mapper.id}").yellow
+      PersistedItem.new(item_mapper, id, stats).persist
+
+      item_mapper.id
     end
   end
 end

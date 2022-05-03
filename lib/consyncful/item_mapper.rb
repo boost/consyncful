@@ -13,6 +13,13 @@ module Consyncful
       @item.is_a?(Contentful::DeletedEntry) || @item.is_a?(Contentful::DeletedAsset)
     end
 
+    def excluded_by_tag?
+      return (Consyncful.configuration.content_tags & item_tag_ids).empty?      if Consyncful.configuration.content_tags.any?
+      return (Consyncful.configuration.ignore_content_tags & item_tag_ids).any? if Consyncful.configuration.ignore_content_tags.any?
+
+      false
+    end
+
     def type
       case @item.type
       when 'Entry' then @item.content_type.id
@@ -34,6 +41,12 @@ module Consyncful
     end
 
     private
+
+    def item_tag_ids
+      return [] if @item.nil?
+
+      @item._metadata[:tags].map(&:id)
+    end
 
     def generic_fields
       { created_at: @item.created_at,

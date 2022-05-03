@@ -15,7 +15,8 @@ module Consyncful
 
     def persist
       puts Rainbow("syncing: #{@item.id}").yellow
-      if @item.deletion?
+
+      if @item.deletion? || @item.excluded_by_tag?
         delete_model(@item.id, @stats)
       else
         create_or_update_model(@item, @sync_id, @stats)

@@ -1,4 +1,4 @@
-# Consyncful [![Build Status](https://travis-ci.org/boost/consyncful.svg?branch=master)](https://travis-ci.org/boost/consyncful)
+# Consyncful
 
 Contentful -> local database synchronisation for Rails
 
@@ -164,6 +164,26 @@ end
 ### Using Locales for specific fields
 
 If fields have multiple locales then the default locale will be mapped to the field name. Additional locales will have a suffix (lower snake case) on the field name. e.g title (default), title_mi_nz (New Zealand Maori mi-NZ)
+
+### Sync specific contents using [Contentful Tag](https://www.contentful.com/help/tags/).
+You can configure Consyncful to sync or ignore specific contents using Contentful Tag.
+
+```rb
+Consyncful.configure do |config|
+  # Any contents tagged with 'myTag' will be stored in the database. 
+  # Other contents without 'myTag' would be ignored.
+  config.content_tags = ['myTag'] # defaults to []
+end
+```
+
+Also, you can ignore contents with specific Tags.
+
+```rb
+Consyncful.configure do |config|
+  # Any contents tagged with 'ignoreTag' won't be stored in the database.
+  config.ignore_content_tags = ['ignoreTag'] # defaults to []
+end
+```
 
 ### Configuring what Mongo database Consyncful uses
 
