@@ -5,8 +5,6 @@ module Consyncful
   # Responsible for mapping an update received from Contentful's syncronisation API
   # into useful fields for Consyncful::PersistedItem to store in the database.
   class ItemMapper
-    attr_reader :item
-
     def initialize(item)
       @item = item
     end
