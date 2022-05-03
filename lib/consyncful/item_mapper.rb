@@ -12,8 +12,7 @@ module Consyncful
     end
 
     def deletion?
-      @item.is_a?(Contentful::DeletedEntry) || 
-        @item.is_a?(Contentful::DeletedAsset)
+      @item.is_a?(Contentful::DeletedEntry) || @item.is_a?(Contentful::DeletedAsset)
     end
 
     def excluded_by_tag?
