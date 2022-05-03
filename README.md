@@ -171,7 +171,7 @@ You can configure Consyncful to sync or ignore specific contents using Contentfu
 ```rb
 Consyncful.configure do |config|
   # Any contents tagged with 'myTag' will be stored in the database. 
-  # Other contents without 'myTag'
+  # Other contents without 'myTag' would be ignored.
   config.content_tags = ['myTag'] # defaults to []
 end
 ```
