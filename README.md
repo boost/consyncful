@@ -1,4 +1,4 @@
-# Consyncful [![Build Status](https://travis-ci.org/boost/consyncful.svg?branch=master)](https://travis-ci.org/boost/consyncful)
+# Consyncful
 
 Contentful -> local database synchronisation for Rails
 
