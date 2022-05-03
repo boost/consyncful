@@ -45,11 +45,7 @@ module Consyncful
     def item_tag_ids
       return [] if @item.nil?
 
-      item_tags = @item._metadata[:tags]
-      
-      return [] if item_tags.nil?
-      
-      item_tags.map(&:id)
+      @item._metadata[:tags].map(&:id)
     end
 
     def generic_fields
