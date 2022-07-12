@@ -36,6 +36,7 @@ module Consyncful
 
       fields.merge!(localized_fields(default_locale))
       fields.merge!(localized_asset_fields(default_locale)) if type == 'asset'
+      fields.merge!(contentful_timestamps) if Consyncful.configuration.preserve_contentful_timestamps
 
       fields
     end
@@ -49,11 +50,13 @@ module Consyncful
     end
 
     def generic_fields
-      { created_at: @item.created_at,
+      {
+        created_at: @item.created_at,
         updated_at: @item.updated_at,
         revision: @item.revision,
         contentful_type: type,
-        synced_at: Time.current }
+        synced_at: Time.current
+      }
     end
 
     def localized_fields(default_locale)
@@ -112,6 +115,13 @@ module Consyncful
       else
         [field, value]
       end
+    end
+
+    def contentful_timestamps
+      {
+        contentful_created_at: @item.created_at,
+        contentful_updated_at: @item.updated_at
+      }
     end
   end
 end
