@@ -174,6 +174,15 @@ RSpec.describe Consyncful::ItemMapper do
         )
       end
     end
+
+    context 'when preserve_contentful_timestamps is enabled' do
+      it 'returns the additional contentful timestamps' do
+        Consyncful.configuration.preserve_contentful_timestamps = true
+
+        expect(item.mapped_fields(default_locale)).to include(contentful_created_at: DateTime.parse('2019-02-20T00:50:17.357Z'))
+        expect(item.mapped_fields(default_locale)).to include(contentful_updated_at: DateTime.parse('2019-02-20T00:50:50.052Z'))
+      end
+    end
   end
 
   describe '#deletion?' do

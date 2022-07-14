@@ -18,7 +18,8 @@ module Consyncful
                   :mongo_client,
                   :mongo_collection,
                   :content_tags,
-                  :ignore_content_tags
+                  :ignore_content_tags,
+                  :preserve_contentful_timestamps
 
     def initialize
       @contentful_client_options = {
@@ -29,6 +30,7 @@ module Consyncful
       @mongo_collection = 'contentful_models'
       @content_tags = []
       @ignore_content_tags = []
+      @preserve_contentful_timestamps = false
     end
   end
 

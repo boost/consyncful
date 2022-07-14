@@ -165,6 +165,19 @@ end
 
 If fields have multiple locales then the default locale will be mapped to the field name. Additional locales will have a suffix (lower snake case) on the field name. e.g title (default), title_mi_nz (New Zealand Maori mi-NZ)
 
+### Preserving Contentful timestamps
+
+If you need to access the timestamps from Contentful, you can enable it by setting `preserve_contentful_timestamps` to `true`.
+
+```rb
+Consyncful.configure do |config|
+  # Consyncful models will have two extra fields that contains the value of timestamps in Contentful.
+  # contentful_created_at
+  # contentful_updated_at
+  config.preserve_contentful_timestamps = true # defaults to false
+end
+```
+
 ### Sync specific contents using [Contentful Tag](https://www.contentful.com/help/tags/).
 You can configure Consyncful to sync or ignore specific contents using Contentful Tag.
 
