@@ -10,6 +10,11 @@ namespace :consyncful do
   end
 
   task :sync, [:seconds] => %i[environment update_model_names] do |_task, args|
+    Signal.trap('TERM') do
+      puts Rainbow("Graceful shutdown PID=#{Process.pid}").red
+      exit 0
+    end
+
     seconds = args[:seconds].to_i
     seconds = 15 if seconds.zero?
     loop do
