@@ -20,8 +20,8 @@ RSpec.describe Consyncful::Configuration do
       end
     end
 
-    context 'when initial:true is overridden' do
-      it 'stays as initial:true' do
+    context 'when initial:true is attempted to be overridden' do
+      it 'does not respect the override' do
         configuration.contentful_sync_options = { initial: false }
         result = configuration.initial_sync_options
         expect(result[:initial]).to be_truthy
@@ -29,7 +29,7 @@ RSpec.describe Consyncful::Configuration do
     end
 
     context 'when an option defined in DEFAULT_SYNC_OPTIONS is overridden' do
-      it 'is respected' do
+      it 'respects the override' do
         configuration.contentful_sync_options = { limit: 2 }
         result = configuration.initial_sync_options
         expect(result[:limit]).to eq 2
@@ -53,5 +53,4 @@ RSpec.describe Consyncful::Configuration do
       end
     end
   end
-
 end
