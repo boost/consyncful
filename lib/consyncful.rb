@@ -10,17 +10,6 @@ require 'consyncful/railtie' if defined?(Rails)
 module Consyncful
   # Handles Rails configurations for Consynful
   class Configuration
-    DEFAULT_CLIENT_OPTIONS = {
-      reuse_entries: true,
-      api_url: 'cdn.contentful.com'
-    }.freeze
-
-    # see https://www.contentful.com/developers/docs/references/content-delivery-api/#/reference/synchronization
-    DEFAULT_SYNC_OPTIONS = {
-      limit: 100,
-      type: 'all'
-    }.freeze
-
     attr_accessor :contentful_client_options,
                   :contentful_sync_options,
                   :locale,
@@ -52,6 +41,17 @@ module Consyncful
       options.reverse_merge!(DEFAULT_CLIENT_OPTIONS)
     end
   end
+
+  DEFAULT_CLIENT_OPTIONS = {
+    reuse_entries: true,
+    api_url: 'cdn.contentful.com'
+  }.freeze
+
+  # see https://www.contentful.com/developers/docs/references/content-delivery-api/#/reference/synchronization
+  DEFAULT_SYNC_OPTIONS = {
+    limit: 100,
+    type: 'all'
+  }.freeze
 
   class << self
     def configuration
