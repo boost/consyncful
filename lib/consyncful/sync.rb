@@ -83,13 +83,17 @@ module Consyncful
     end
 
     def start_sync
-      if next_url.present?
-        puts Rainbow("Starting update, last update: #{last_run_at} (#{(Time.current - last_run_at).round(3)}s ago)").blue
-        Consyncful.client.sync(next_url)
-      else
-        puts Rainbow('Starting full refresh').blue
-        Consyncful.client.sync(initial: true)
-      end
+      next_url.present? ? start_update : start_new_sync
+    end
+
+    def start_update
+      puts Rainbow("Starting update, last update: #{last_run_at} (#{(Time.current - last_run_at).round(3)}s ago)").blue
+      Consyncful.client.sync(next_url)
+    end
+
+    def start_new_sync
+      puts Rainbow('Starting full refresh').blue
+      Consyncful.client.sync(Consyncful.configuration.initial_sync_options)
     end
 
     def sync_items(sync, stats)
