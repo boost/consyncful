@@ -82,7 +82,7 @@ RSpec.describe Consyncful::Sync do
     end
 
     it 'starts a new sync when there is no next_url' do
-      expect(client).to receive(:sync).with(initial: true).and_return(client_sync)
+      expect(client).to receive(:sync).with(Consyncful.configuration.initial_sync_options).and_return(client_sync)
       Consyncful::Sync.new.run
     end
 

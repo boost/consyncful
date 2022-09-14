@@ -42,7 +42,7 @@ If you don't already use Mongoid, generate a mongoid.yml by running:
 
 Add an initializer:
 
-Consyncful uses [contentful.rb](https://github.com/contentful/contentful.rb); client options are as documented there.
+Consyncful uses [contentful.rb](https://github.com/contentful/contentful.rb); client options are as documented there. Sync options are documented in the [Content Delivery Sync API docs](https://www.contentful.com/developers/docs/references/content-delivery-api/#/reference/synchronization).
 ```rb
 Consyncful.configure do |config|
   config.locale = 'en-NZ'
@@ -52,6 +52,11 @@ Consyncful.configure do |config|
     access_token: 'ACCESS TOKEN',
     environment: 'master',        # optional
     logger: Logger.new(STDOUT)    # optional for debugging
+  }
+
+  # optional to override the Sync API defaults
+  config.contentful_sync_options = { 
+    limit: 50
   }
 end
 ```
