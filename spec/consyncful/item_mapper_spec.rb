@@ -63,6 +63,11 @@ RSpec.describe Consyncful::ItemMapper do
             'contentType' => 'image/jpeg'
           }
         }
+      },
+      'metadata' => {
+        'tags' => [
+          { 'sys' => { 'type' => 'Link', 'linkType' => 'Tag', 'id' => 'tag1' } }
+        ]
       }
     }
   end
@@ -111,6 +116,10 @@ RSpec.describe Consyncful::ItemMapper do
       dummy_time = double('time')
       expect(Time).to receive(:current).and_return(dummy_time)
       expect(item.mapped_fields(default_locale)).to include(synced_at: dummy_time)
+    end
+
+    it 'returns a field called contentful_tags with the tag ids' do
+      expect(item.mapped_fields(default_locale)).to include(contentful_tags: ['tag1'])
     end
 
     it 'returns all content model specific fields from the default locale' do

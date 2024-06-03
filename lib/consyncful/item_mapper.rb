@@ -55,6 +55,7 @@ module Consyncful
         updated_at: @item.updated_at,
         revision: @item.revision,
         contentful_type: type,
+        contentful_tags: @item._metadata[:tags].map(&:id),
         synced_at: Time.current
       }
     end
