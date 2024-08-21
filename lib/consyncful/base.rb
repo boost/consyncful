@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'consyncful/configuration'
+
 module Consyncful
   ##
   # Provides common functionality of Mongoid models created from contentful
@@ -10,8 +12,8 @@ module Consyncful
 
     cattr_accessor :model_map
 
-    store_in collection: 'contentful_models',
-             client: 'default'
+    store_in collection: Consyncful.configuration.mongo_collection.to_s,
+             client: Consyncful.configuration.mongo_client.to_s
 
     def self.contentful_model_name(name)
       self.model_map ||= {}

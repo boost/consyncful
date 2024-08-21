@@ -4,6 +4,7 @@ require 'rainbow'
 require 'consyncful/item_mapper'
 require 'consyncful/persisted_item'
 require 'consyncful/stats'
+require 'consyncful/configuration'
 require 'hooks'
 
 module Consyncful
@@ -19,7 +20,7 @@ module Consyncful
     include Mongoid::Document
     include Hooks
 
-    store_in client: 'default'
+    store_in client: Consyncful.configuration.mongo_client.to_s
 
     define_hook :before_run
     define_hook :after_run
