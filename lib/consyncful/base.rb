@@ -10,8 +10,8 @@ module Consyncful
 
     cattr_accessor :model_map
 
-    store_in collection: -> { Consyncful.configuration.mongo_collection },
-             client: -> { Consyncful.configuration.mongo_client }
+    store_in collection: Consyncful.configuration.mongo_collection.to_s,
+             client: Consyncful.configuration.mongo_client.to_s
 
     def self.contentful_model_name(name)
       self.model_map ||= {}
