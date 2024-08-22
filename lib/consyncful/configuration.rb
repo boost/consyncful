@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module Consyncful
-   # Handles Rails configurations for Consynful
-   class Configuration
+  # Handles Rails configurations for Consynful
+  class Configuration
     attr_accessor :contentful_client_options,
                   :contentful_sync_options,
                   :locale,
