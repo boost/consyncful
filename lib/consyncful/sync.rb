@@ -4,7 +4,6 @@ require 'rainbow'
 require 'consyncful/item_mapper'
 require 'consyncful/persisted_item'
 require 'consyncful/stats'
-require 'consyncful/configuration'
 require 'hooks'
 
 module Consyncful

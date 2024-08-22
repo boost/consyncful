@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'consyncful/configuration'
-
 module Consyncful
   ##
   # Provides common functionality of Mongoid models created from contentful
