@@ -67,7 +67,7 @@ module Consyncful
     end
 
     def reset_fields(instance)
-      instance.attributes.each_key do |field_name|
+      instance.attributes.each do |field_name, _value|
         next if field_name.in? %w[_id _type]
 
         instance[field_name] = nil

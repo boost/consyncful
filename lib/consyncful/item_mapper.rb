@@ -92,7 +92,7 @@ module Consyncful
     def localized_field_name(field, locale_code, default_locale)
       return field if locale_code.to_s == default_locale.to_s
 
-      :"#{field}_#{locale_code.to_s.underscore}"
+      "#{field}_#{locale_code.to_s.underscore}".to_sym
     end
 
     def reference_value?(value)
