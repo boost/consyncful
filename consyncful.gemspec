@@ -39,7 +39,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rubocop-rake'
   spec.add_development_dependency 'rubocop-rspec'
 
-  spec.add_dependency 'contentful', ['>=2.11.1', '<3.0.0']
+  spec.add_dependency 'contentful', '~> 2.16.3'
   spec.add_dependency 'hooks', '>=0.4.1'
   spec.add_dependency 'mongoid', '~> 9'
   spec.add_dependency 'rainbow'
