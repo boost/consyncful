@@ -31,14 +31,6 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
 
-  spec.add_development_dependency 'bundler', '~> 2'
-  spec.add_development_dependency 'database_cleaner-mongoid'
-  spec.add_development_dependency 'rake', '~> 13.0'
-  spec.add_development_dependency 'rspec', '~> 3.0'
-  spec.add_development_dependency 'rubocop'
-  spec.add_development_dependency 'rubocop-rake'
-  spec.add_development_dependency 'rubocop-rspec'
-
   spec.add_dependency 'contentful', ['>=2.11.1', '<3.0.0']
   spec.add_dependency 'hooks', '>=0.4.1'
   spec.add_dependency 'mongoid', '>=7.0.2'
