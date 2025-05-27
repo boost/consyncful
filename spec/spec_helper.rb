@@ -2,11 +2,11 @@
 
 require 'bundler/setup'
 require 'consyncful'
-require 'database_cleaner'
+require 'database_cleaner/mongoid'
 
 Mongoid.load!('spec/support/mongoid.yml', :test)
 
-DatabaseCleaner.strategy = :truncation
+DatabaseCleaner.strategy = :deletion
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
@@ -16,7 +16,7 @@ RSpec.configure do |config|
   config.disable_monkey_patching!
 
   config.before(:each) do
-    DatabaseCleaner.clean_with(:truncation)
+    DatabaseCleaner.clean_with(:deletion)
   end
 
   config.expect_with :rspec do |c|
