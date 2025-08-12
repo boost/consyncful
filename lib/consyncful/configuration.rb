@@ -1,8 +1,12 @@
 # frozen_string_literal: true
 
+require 'consyncful/config/webhook'
+require 'consyncful/config/jobs'
+require 'consyncful/config/debounce'
+require 'consyncful/config/lock'
+
 # Handles Rails configurations for Consyncful
 module Consyncful
-  ##
   class Configuration
     attr_accessor :contentful_client_options,
                   :contentful_sync_options,
@@ -13,6 +17,8 @@ module Consyncful
                   :ignore_content_tags,
                   :preserve_contentful_timestamps
 
+    attr_reader :webhook, :jobs, :debounce, :lock
+
     def initialize
       @contentful_client_options = {}
       @contentful_sync_options = {}
@@ -22,6 +28,11 @@ module Consyncful
       @content_tags = []
       @ignore_content_tags = []
       @preserve_contentful_timestamps = false
+
+      @webhook = Config::Webhook.new
+      @jobs = Config::Jobs.new
+      @debounce = Config::Debounce.new
+      @lock = Config::Lock.new
     end
 
     def initial_sync_options
@@ -34,6 +45,21 @@ module Consyncful
       options = @contentful_client_options
       options.reverse_merge!(DEFAULT_CLIENT_OPTIONS)
     end
+
+    def use_webhooks?
+      webhook.enabled && webhook.secret.present?
+    end
+
+    def webhook_path;           webhook.path;            end
+    def webhook_secret;         webhook.secret;          end
+    def webhook_ttl_seconds;    webhook.ttl_seconds;     end
+    def webhook_accept_topics;  webhook.accept_topics;   end
+
+    def job_queue;              jobs.queue;              end
+    def debounce_window;        debounce.window_seconds; end
+
+    def lock_backend;           lock.backend;            end
+    def lock_ttl_seconds;       lock.ttl_seconds;        end
   end
 
   DEFAULT_CLIENT_OPTIONS = {
