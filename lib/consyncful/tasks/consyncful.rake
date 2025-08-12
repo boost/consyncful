@@ -1,14 +1,17 @@
 # frozen_string_literal: true
 
 namespace :consyncful do
+  desc "Run a one-time sync of the latest Contentful data into the app"
   task update: [:environment] do
     Consyncful::Sync.latest.run
   end
 
+  desc "Run a one-time full refresh of all Contentful data into the app (bypasses caching)"
   task refresh: [:environment] do
     Consyncful::Sync.fresh.run
   end
 
+  desc "Continuously sync the latest Contentful data every N seconds (default: 15). Usage: rake consyncful:sync[SECONDS]"
   task :sync, [:seconds] => %i[environment update_model_names] do |_task, args|
     Signal.trap('TERM') do
       puts Rainbow("Graceful shutdown PID=#{Process.pid}").red
@@ -23,6 +26,7 @@ namespace :consyncful do
     end
   end
 
+  desc "Update stored model _type fields based on Contentful type mappings"
   task update_model_names: [:environment] do
     if Rails.autoloaders.zeitwerk_enabled?
       Zeitwerk::Loader.eager_load_all
