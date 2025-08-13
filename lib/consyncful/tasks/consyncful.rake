@@ -11,43 +11,19 @@ namespace :consyncful do
     Consyncful::Sync.fresh.run
   end
 
-  desc "Continuously sync Contentful data. Default: poll every N seconds (default: 15)." \
-       "Usage: rake consyncful:sync[SECONDS]  |  Modes: poll (default) or webhook"
+  desc "Continuously sync Contentful data. Default: poll every N seconds (default: 15).\n" \
+     "Usage: rake consyncful:sync[SECONDS]  |  Modes: poll (default) or webhook"
   task :sync, [:seconds] => %i[environment update_model_names] do |_task, args|
-    Signal.trap('TERM') do
-      puts Rainbow("Graceful shutdown PID=#{Process.pid}").red
-      exit 0
-    end
+    require "consyncful/sync_runner"
 
-    # interval: in poll mode it's the poll interval; in webhook mode it's the check interval
-    seconds = args[:seconds].to_i
-    seconds = 15 if seconds.zero?
+    seconds = args[:seconds]
+    mode = if Consyncful.respond_to?(:configuration)
+            Consyncful.configuration&.sync_mode || ENV['CONSYNCFUL_SYNC_MODE'] || :poll
+          else
+            ENV['CONSYNCFUL_SYNC_MODE'] || :poll
+          end
 
-    # mode comes from config (preferred) or ENV fallback; default :poll
-    config  = Consyncful.respond_to?(:configuration) ? Consyncful.configuration : nil
-    mode = (config&.sync_mode || ENV['CONSYNCFUL_SYNC_MODE'] || :poll).to_sym
-
-    case mode
-    when :poll
-      puts "[consyncful] mode=:poll interval=#{seconds}s"
-      loop do
-        Consyncful::Sync.latest.run
-        sleep(seconds)
-      end
-    when :webhook
-      puts "[consyncful] mode=:webhook check_every=#{seconds}s"
-      loop do
-        # Only run when a webhook has set the boolean; consume it atomically
-        if Consyncful::Sync.consume_webhook_signal!
-          Consyncful::Sync.latest.run
-        else
-          sleep(seconds)
-        end
-      end
-
-    else
-      raise "Unknown sync mode: #{mode.inspect} (expected :poll or :webhook)"
-    end
+    Consyncful::SyncRunner.new(seconds: seconds, mode: mode).run
   end
 
 
