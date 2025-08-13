@@ -15,11 +15,13 @@ module Consyncful
                   :mongo_collection,
                   :content_tags,
                   :ignore_content_tags,
-                  :preserve_contentful_timestamps
+                  :preserve_contentful_timestamps,
+                  :sync_mode
 
     attr_reader :webhook, :jobs, :debounce, :lock
 
     def initialize
+      @sync_mode = :poll
       @contentful_client_options = {}
       @contentful_sync_options = {}
       @locale = 'en-NZ'
