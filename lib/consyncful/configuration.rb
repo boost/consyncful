@@ -49,7 +49,7 @@ module Consyncful
     end
 
     def use_webhooks?
-      webhook.enabled && webhook.secret.present?
+      sync_mode == :webhook && webhook.secret.present?
     end
 
     def webhook_path;           webhook.path;            end
