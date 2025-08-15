@@ -23,7 +23,9 @@ flowchart TD
 ```
 
 ## Contents
-- [Installation](#installation)
+- [Setup](#setup)
+  - [Installation](#installation)
+  - [Configuration](#configuration)
 - [Usage](#usage)
   - [Creating contentful models in your Rails app](#creating-contentful-models-in-your-rails-app)
   - [Synchronizing contentful data](#synchronizing-contentful-data)
@@ -39,7 +41,9 @@ flowchart TD
 - [Contributing](#contributing)
 - [License](#license)
 
-## Installation
+## Setup
+
+### Installation
 
 Add this line to your application's Gemfile:
 
@@ -56,7 +60,7 @@ If you don't already use Mongoid, generate a mongoid.yml by running:
     $ rake g mongoid:config
 
 
-## Configuration
+### Configuration
 
 Create `config/initializers/consyncful.rb`. An example with common configuration is:
 
@@ -82,7 +86,7 @@ end
 > Consyncful uses the official [contentful.rb](https://github.com/contentful/contentful.rb) client. Any `contentful_client_options` you set are passed through to that library unchanged. Sync settings in `contentful_sync_options` map to the parameters in Contentful’s [Content Delivery Sync API](https://www.contentful.com/developers/docs/references/content-delivery-api/#/reference/synchronization).
 
 
-### Configuration options
+#### Configuration options
 
 | Option | Description | Default |
 | --- | --- | --- |
@@ -99,9 +103,7 @@ end
 | `webhook_user` | Username for webhook Basic Auth (when enabled). | `nil` |
 | `webhook_password` | Password for webhook Basic Auth (when enabled). | `nil` |
 
-## Usage
-
-### Creating contentful models in your Rails app
+## Creating contentful models in your Rails application
 
 Create models by inheriting from `Consyncful::Base`
 
