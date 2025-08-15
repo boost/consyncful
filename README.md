@@ -1,6 +1,8 @@
 # Consyncful
 
-Contentful -> local database synchronisation for Rails
+Contentful -> MongoDB synchronisation for Rails.
+
+## Why Consyncful?
 
 Requesting complicated models from the Contentful Delivery API in Rails applications is often too slow, and makes testing applications painful. Consyncful uses Contentful's synchronisation API to keep a local, up-to-date copy of the entire content in a Mongo database.
 
@@ -8,6 +10,15 @@ Once the content is available locally, finding and interact with contentful data
 
 This gem doesn't provide any integration with the management API, or any way to update Contentful models from the local store. It is strictly read only.
 
+```mermaid
+flowchart TD
+  CF[Contentful (Delivery API / Sync API)] -->|sync| SY[`rake consyncful:sync`]
+  SY -->|writes| DB[MongoDB (single collection)]
+  APP[Rails models (Mongoid,<br/>subclass Consyncful::Base)] -->|query| DB
+```
+
+
+## Contents
 - [Installation](#installation)
 - [Usage](#usage)
   - [Creating contentful models in your Rails app](#creating-contentful-models-in-your-rails-app)
