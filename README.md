@@ -167,10 +167,10 @@ Now you've synced your data, it is all available via your Rails models.
 
 ### Enabling webhook mode
 
-> [!TIP] **Prefer Webhook mode on limited plans**
+> [!TIP]
+> **Prefer Webhook mode on limited plans**
 > Polling makes API requests on every interval (default ~15s), which can quickly add up and exhaust quotas on lower-tier Contentful plans.
 > **Webhook mode** only syncs when Contentful sends an event, dramatically reducing API calls. If you’re hitting rate limits—or want to avoid them—switch to `:webhook`.
->
 > If you are hitting API rate limits and need to use polling, consider increasing the interval to reduce load.
 
 
