@@ -14,11 +14,9 @@ module Consyncful
              client: Consyncful.configuration.mongo_client.to_s
 
     def self.contentful_model_name(name)
-      model_map = self.model_map
-      model_map ||= {}
+      self.model_map ||= {}
 
-      model_map[name] = self
-      model_map
+      self.model_map[name] = self
     end
 
     # rubocop:disable Lint/NestedMethodDefinition

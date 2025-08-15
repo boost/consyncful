@@ -3,10 +3,10 @@
 module Consyncful
   class WebhookController < ActionController::API
     include ActionController::HttpAuthentication::Basic::ControllerMethods
-    before_action :authenticate, if: -> { Consyncful.configuration.use_webhooks? }
+    before_action :authenticate, if: -> { Consyncful.configuration.webhook_authentication_enabled && use_webhooks? }
 
-    def create
-      return head :not_found unless Consyncful.configuration.use_webhooks?
+    def trigger_sync
+      return head :not_found unless use_webhooks?
 
       Consyncful::Sync.signal_webhook!
       head :accepted
@@ -14,10 +14,14 @@ module Consyncful
 
     private
 
+    def use_webhooks?
+      Consyncful.configuration.sync_mode == :webhook
+    end
+
     def authenticate
       config = Consyncful.configuration
-      authenticate_or_request_with_http_basic('Consyncful: Authenticate to Trigger Sync') do |user, pass|
-        secure_compare(user, config.resolved_webhook_user) && secure_compare(pass, config.resolved_webhook_password)
+      authenticate_or_request_with_http_basic('Consyncful: Authenticate to Trigger Sync') do |username, password|
+        secure_compare(username, config.webhook_user) && secure_compare(password, config.webhook_password)
       end
     end
 

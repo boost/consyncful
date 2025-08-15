@@ -11,17 +11,17 @@ namespace :consyncful do
     Consyncful::Sync.fresh.run
   end
 
-  desc "Continuously sync Contentful data. Default: poll every N seconds (default: 15).\n" \
-       'Usage: rake consyncful:sync[SECONDS]  |  Modes: poll (default) or webhook'
+  desc 'Continuously sync Contentful data. Default: poll every N seconds (default: 15)'
   task :sync, [:seconds] => %i[environment update_model_names] do |_task, args|
     require 'consyncful/sync_runner'
+    Signal.trap('TERM') do
+      puts Rainbow("Graceful shutdown PID=#{Process.pid}").red
+      exit 0
+    end
 
     seconds = args[:seconds]
-    mode = if Consyncful.respond_to?(:configuration)
-             Consyncful.configuration&.sync_mode || ENV['CONSYNCFUL_SYNC_MODE'] || :poll
-           else
-             ENV['CONSYNCFUL_SYNC_MODE'] || :poll
-           end
+    mode = Consyncful.configuration&.sync_mode || :poll
+    puts "mode=#{mode.inspect} interval=#{seconds.inspect}s"
 
     Consyncful::SyncRunner.new(seconds: seconds, mode: mode).run
   end

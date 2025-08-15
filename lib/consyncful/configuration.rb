@@ -12,6 +12,7 @@ module Consyncful
                   :ignore_content_tags,
                   :preserve_contentful_timestamps,
                   :sync_mode,
+                  :webhook_authentication_enabled,
                   :webhook_user,
                   :webhook_password
 
@@ -26,6 +27,7 @@ module Consyncful
       @ignore_content_tags = []
       @preserve_contentful_timestamps = false
 
+      @webhook_authentication_enabled = true
       @webhook_user = nil
       @webhook_password = nil
     end
@@ -39,13 +41,6 @@ module Consyncful
     def client_options
       options = @contentful_client_options
       options.reverse_merge!(DEFAULT_CLIENT_OPTIONS)
-    end
-
-    def resolved_webhook_user = @webhook_user || ENV['CONTENTFUL_WEBHOOK_USER']
-    def resolved_webhook_password = @webhook_password || ENV['CONTENTFUL_WEBHOOK_PASSWORD']
-
-    def use_webhooks?
-      sync_mode == :webhook && resolved_webhook_user.present? && resolved_webhook_password.present?
     end
   end
 
