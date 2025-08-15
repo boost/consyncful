@@ -12,7 +12,7 @@ module Consyncful
                   :ignore_content_tags,
                   :preserve_contentful_timestamps,
                   :sync_mode,
-                  :webhook_authentication_enabled,
+                  :webhook_authentication_required,
                   :webhook_user,
                   :webhook_password
 
@@ -27,7 +27,7 @@ module Consyncful
       @ignore_content_tags = []
       @preserve_contentful_timestamps = false
 
-      @webhook_authentication_enabled = true
+      @webhook_authentication_required = true
       @webhook_user = nil
       @webhook_password = nil
     end

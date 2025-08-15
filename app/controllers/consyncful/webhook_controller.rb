@@ -3,7 +3,7 @@
 module Consyncful
   class WebhookController < ActionController::API
     include ActionController::HttpAuthentication::Basic::ControllerMethods
-    before_action :authenticate, if: -> { Consyncful.configuration.webhook_authentication_enabled && use_webhooks? }
+    before_action :authenticate, if: -> { Consyncful.configuration.webhook_authentication_required && use_webhooks? }
 
     def trigger_sync
       return head :not_found unless use_webhooks?

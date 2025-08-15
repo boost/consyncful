@@ -58,7 +58,7 @@ If you don't already use Mongoid, generate a mongoid.yml by running:
 
 ## Configuration
 
-Create config/initializers/consyncful.rb. Common options:
+Create `config/initializers/consyncful.rb`. An example with common configuration is:
 
 ```rb
 Consyncful.configure do |config|
@@ -82,19 +82,22 @@ end
 > Consyncful uses the official [contentful.rb](https://github.com/contentful/contentful.rb) client. Any `contentful_client_options` you set are passed through to that library unchanged. Sync settings in `contentful_sync_options` map to the parameters in Contentful’s [Content Delivery Sync API](https://www.contentful.com/developers/docs/references/content-delivery-api/#/reference/synchronization).
 
 
-### Option references
+### Configuration options
 
 | Option | Description | Default |
 | --- | --- | --- |
+| `sync_mode` | How syncing is triggered: `:poll` (periodic polling used by default) or `:webhook` (sync runs when a webhook is received from contentful). | `:poll` |
+| `contentful_client_options` | Options passed through to the `contentful.rb` client. Defaults include `reuse_entries: true`, `api_url: 'cdn.contentful.com'`. | `{}` (merged with defaults) |
+| `contentful_sync_options` | Contentful Sync API parameters (e.g., `limit`, `type`). Defaults include `limit: 100`, `type: 'all'`. | `{}` (merged with defaults) |
 | `locale` | Default locale when mapping fields. | `'en-NZ'` |
-| `contentful_client_options` | Passed to `contentful.rb` client. | – |
-| `contentful_sync_options` | Sync API params (e.g., `limit`). | Contentful defaults |
-| `preserve_contentful_timestamps` | Adds `contentful_created_at` & `contentful_updated_at` to models. | `false` |
 | `content_tags` | Only store entries that have **any** of these tags. | `[]` |
 | `ignore_content_tags` | Ignore entries with **any** of these tags. | `[]` |
+| `preserve_contentful_timestamps` | Adds `contentful_created_at` and `contentful_updated_at` to models. | `false` |
 | `mongo_client` | Mongoid client to use (from `mongoid.yml`). | `:default` |
-| `mongo_collection` | Collection name for all entries. | `'contentful_models'` |
-
+| `mongo_collection` | MongoDB collection name for all entries. | `'contentful_models'` |
+| `webhook_authentication_enabled` | Require Basic Auth for the webhook endpoint (only relevant when `sync_mode: :webhook`, enabled by default). | `true` |
+| `webhook_user` | Username for webhook Basic Auth (when enabled). | `nil` |
+| `webhook_password` | Password for webhook Basic Auth (when enabled). | `nil` |
 
 ## Usage
 
