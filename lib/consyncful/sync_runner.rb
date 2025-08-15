@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # lib/consyncful/sync_runner.rb
 module Consyncful
   class SyncRunner
@@ -7,7 +9,7 @@ module Consyncful
     def initialize(seconds: nil, mode: nil, logger: nil)
       @interval = seconds || DEFAULT_INTERVAL
       @mode     = normalize_mode(mode || resolved_mode_from_config_or_env)
-      @logger   = logger || Logger.new($stdout).tap { |l| l.progname = "consyncful" }
+      @logger   = logger || Logger.new($stdout).tap { |l| l.progname = 'consyncful' }
       @sync     = Consyncful::Sync.latest
       @stop     = false
       @shutdown_reason = nil
@@ -22,9 +24,7 @@ module Consyncful
       when :webhook then run_webhook
       end
     ensure
-      if @shutdown_reason
-        log "Graceful shutdown (#{@shutdown_reason}) PID=#{Process.pid}", level: :warn
-      end
+      log "Graceful shutdown (#{@shutdown_reason}) PID=#{Process.pid}", level: :warn if @shutdown_reason
     end
 
     private
@@ -32,6 +32,7 @@ module Consyncful
     def run_poll
       loop do
         break if @stop
+
         @sync.run
         sleep(@interval)
       end
@@ -41,6 +42,7 @@ module Consyncful
       @sync.run
       loop do
         break if @stop
+
         if Consyncful::Sync.consume_webhook_signal!
           @sync.run
         else
@@ -52,6 +54,7 @@ module Consyncful
     def normalize_mode(value)
       sym = value.to_sym
       return sym if VALID_MODES.include?(sym)
+
       raise ArgumentError, "Unknown sync mode: #{sym.inspect} (expected :poll or :webhook)"
     end
 

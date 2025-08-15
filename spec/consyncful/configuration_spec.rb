@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Consyncful::Configuration do
   let(:configuration) { Consyncful::Configuration.new }
 
-  it "defaults to poll sync_mode" do
+  it 'defaults to poll sync_mode' do
     expect(configuration.sync_mode).to eq(:poll)
   end
 
@@ -96,29 +96,29 @@ RSpec.describe Consyncful::Configuration do
       expect(configuration.use_webhooks?).to eq false
     end
 
-    it "is false if mode=webhook but credentials are missing" do
+    it 'is false if mode=webhook but credentials are missing' do
       configuration.sync_mode = :webhook
       configuration.webhook_user = nil
       configuration.webhook_password = nil
       expect(configuration.use_webhooks?).to eq false
     end
 
-    it "is true when mode=webhook and credentials are set on config" do
+    it 'is true when mode=webhook and credentials are set on config' do
       configuration.sync_mode = :webhook
-      configuration.webhook_user = "username"
-      configuration.webhook_password = "password"
+      configuration.webhook_user = 'username'
+      configuration.webhook_password = 'password'
       expect(configuration.use_webhooks?).to eq true
     end
 
-    context "when credentials are set on ENV" do
+    context 'when credentials are set on ENV' do
       before { allow(ENV).to receive(:[]).with('CONTENTFUL_WEBHOOK_USER').and_return('username') }
       before { allow(ENV).to receive(:[]).with('CONTENTFUL_WEBHOOK_PASSWORD').and_return('password') }
 
-      it "resolves credentials from ENV" do
+      it 'resolves credentials from ENV' do
         configuration.sync_mode = :webhook
         expect(configuration.use_webhooks?).to eq true
-        expect(configuration.resolved_webhook_user).to eq("username")
-        expect(configuration.resolved_webhook_password).to eq("password")
+        expect(configuration.resolved_webhook_user).to eq('username')
+        expect(configuration.resolved_webhook_password).to eq('password')
       end
     end
   end

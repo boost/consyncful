@@ -18,6 +18,7 @@ module Consyncful
       model_map ||= {}
 
       model_map[name] = self
+      model_map
     end
 
     # rubocop:disable Lint/NestedMethodDefinition

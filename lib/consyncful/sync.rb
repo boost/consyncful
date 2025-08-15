@@ -38,8 +38,8 @@ module Consyncful
     def self.signal_webhook!
       doc = latest
       # Upsert so it works even if no Sync doc exists yet; atomic set to true
-      collection.find({_id: doc.id})
-                .find_one_and_update({'$set' => {'webhook_pending' => true}}, upsert: true)
+      collection.find({ _id: doc.id })
+                .find_one_and_update({ '$set' => { 'webhook_pending' => true } }, upsert: true)
       true
     end
 
@@ -47,9 +47,8 @@ module Consyncful
     # Consume the webhook signal and set webhook_pending to false
     def self.consume_webhook_signal!
       doc = latest
-      res = collection.find({_id: doc.id, 'webhook_pending' => true})
-                      .find_one_and_update({'$set' => {'webhook_pending' => false}})
-      res
+      collection.find({ _id: doc.id, 'webhook_pending' => true })
+                .find_one_and_update({ '$set' => { 'webhook_pending' => false } })
     end
 
     ##
