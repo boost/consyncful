@@ -22,7 +22,6 @@ flowchart TD
   APP -->|queries| DB
 ```
 
-
 ## Contents
 - [Installation](#installation)
 - [Usage](#usage)
@@ -56,16 +55,18 @@ If you don't already use Mongoid, generate a mongoid.yml by running:
 
     $ rake g mongoid:config
 
-Add an initializer:
 
-Consyncful uses [contentful.rb](https://github.com/contentful/contentful.rb); client options are as documented there. Sync options are documented in the [Content Delivery Sync API docs](https://www.contentful.com/developers/docs/references/content-delivery-api/#/reference/synchronization).
+## Configuration
+
+Create config/initializers/consyncful.rb. Common options:
+
 ```rb
 Consyncful.configure do |config|
   config.locale = 'en-NZ'
   config.contentful_client_options = {
     api_url: 'cdn.contentful.com',
     space: 'space_id',
-    access_token: 'ACCESS TOKEN',
+    access_token: 'ACCESS_TOKEN',
     environment: 'master',        # optional
     logger: Logger.new(STDOUT)    # optional for debugging
   }
@@ -76,6 +77,24 @@ Consyncful.configure do |config|
   }
 end
 ```
+
+> [!IMPORTANT]
+> Consyncful uses the official [contentful.rb](https://github.com/contentful/contentful.rb) client. Any `contentful_client_options` you set are passed through to that library unchanged. Sync settings in `contentful_sync_options` map to the parameters in Contentful’s [Content Delivery Sync API](https://www.contentful.com/developers/docs/references/content-delivery-api/#/reference/synchronization).
+
+
+### Option references
+
+| Option | Description | Default |
+| --- | --- | --- |
+| `locale` | Default locale when mapping fields. | `'en-NZ'` |
+| `contentful_client_options` | Passed to `contentful.rb` client. | – |
+| `contentful_sync_options` | Sync API params (e.g., `limit`). | Contentful defaults |
+| `preserve_contentful_timestamps` | Adds `contentful_created_at` & `contentful_updated_at` to models. | `false` |
+| `content_tags` | Only store entries that have **any** of these tags. | `[]` |
+| `ignore_content_tags` | Ignore entries with **any** of these tags. | `[]` |
+| `mongo_client` | Mongoid client to use (from `mongoid.yml`). | `:default` |
+| `mongo_collection` | Collection name for all entries. | `'contentful_models'` |
+
 
 ## Usage
 
