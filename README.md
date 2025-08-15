@@ -1,6 +1,6 @@
 # Consyncful
 
-Contentful -> MongoDB synchronisation for Rails.
+[Contentful](https://www.contentful.com/) -> MongoDB synchronisation for Rails.
 
 ## Why Consyncful?
 
@@ -12,9 +12,14 @@ This gem doesn't provide any integration with the management API, or any way to 
 
 ```mermaid
 flowchart TD
-  CF[Contentful (Delivery API / Sync API)] -->|sync| SY[`rake consyncful:sync`]
-  SY -->|writes| DB[MongoDB (single collection)]
-  APP[Rails models (Mongoid,<br/>subclass Consyncful::Base)] -->|query| DB
+  CF["Contentful (Delivery API / Sync API)"]
+  SY["rake consyncful:sync"]
+  DB["MongoDB (single collection)"]
+  APP["Rails models (Mongoid, subclass Consyncful::Base)"]
+
+  CF -->|sync| SY
+  SY -->|writes| DB
+  APP -->|queries| DB
 ```
 
 
