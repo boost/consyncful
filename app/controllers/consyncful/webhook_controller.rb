@@ -21,8 +21,8 @@ module Consyncful
       end
     end
 
-    def secure_compare(a, b)
-      ActiveSupport::SecurityUtils.secure_compare(a.to_s, b.to_s)
+    def secure_compare(value, expected)
+      ActiveSupport::SecurityUtils.secure_compare(value.to_s, expected.to_s)
     end
   end
 end
