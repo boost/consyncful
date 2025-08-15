@@ -11,7 +11,9 @@ module Consyncful
                   :content_tags,
                   :ignore_content_tags,
                   :preserve_contentful_timestamps,
-                  :sync_mode
+                  :sync_mode,
+                  :webhook_user,
+                  :webhook_password
 
     def initialize
       @sync_mode = :poll
@@ -23,6 +25,9 @@ module Consyncful
       @content_tags = []
       @ignore_content_tags = []
       @preserve_contentful_timestamps = false
+
+      @webhook_user = nil
+      @webhook_password = nil
     end
 
     def initial_sync_options
@@ -36,8 +41,11 @@ module Consyncful
       options.reverse_merge!(DEFAULT_CLIENT_OPTIONS)
     end
 
+    def resolved_webhook_user = @webhook_user || ENV['CONTENTFUL_WEBHOOK_USER']
+    def resolved_webhook_password = @webhook_password || ENV['CONTENTFUL_WEBHOOK_PASSWORD']
+
     def use_webhooks?
-      sync_mode == :webhook # TODO: Add webhook secret check
+      sync_mode == :webhook && resolved_webhook_user.present? && resolved_webhook_password.present?
     end
   end
 
