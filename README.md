@@ -133,25 +133,78 @@ class ModelWithReferences < Consyncful::Base
 end
 ```
 
-### Synchronizing contentful data
+## Synchronizing contentful data
 
-To run a synchronization process run:
+`Consyncful` supports **two sync modes**:
+- **Polling (default)** — checks Contentful on an interval and syncs changes.
+- **Webhook** — Contentful calls your app; the worker syncs when a webhook arrives.
+
+### Continuous sync (either mode)
+Run the same task in both modes — the behaviour depends on your configuration:
 
     $ rake consyncful:sync
 
-The first time you run this it will download all the Contentful content. It will then check every 15 seconds for changes to the content and update/delete records in the database when changes are made in Contentful.
+- **Polling mode**: after the initial full sync, the worker polls every **15s** (configurable) and applies changes it finds.
+- **Webhook mode**: after the initial full sync, the worker **does not poll**. It waits for a webhook signal and then runs a sync.
 
-If you want to synchronise from scratch, run:
+
+> [!NOTE]
+> The first time you run this it will download all the Contentful content.
+
+### Refresh from scratch
+
+If you want to resynchronize everything (e.g., after model/content type renames), run:
 
     $ rake consyncful:refresh
+
+This performs a full rebuild of data from contentful.
 
 It is recommended to refresh your data if you change model names.
 
 Now you've synced your data, it is all available via your Rails models.
 
-### Finding and interacting with models
+### Enabling webhook mode
 
-#### Querying
+#### 1. Set the sync mode to webhook
+
+```
+# e.g. config/initializers/consyncful.rb
+Consyncful.configure do |c|
+  c.sync_mode = :webhook
+end
+```
+
+#### 2. Mount the webhooks controller:
+Expose the engine so Contentful can POST to it
+```
+# config/routes.rb
+mount Consyncful::Engine, at: "/consyncful"
+```
+The webhook endpoint lives under this mount (e.g. `/consyncful/trigger_sync`).
+
+#### 3. Authentication (recommended)
+Webhook authentication is **on by default**:
+```
+Consyncful.configure do |c|
+  c.webhook_authentication_required = true   # default
+  c.webhook_user     = ENV["CONSYNCFUL_WEBHOOK_USER"]
+  c.webhook_password = ENV["CONSYNCFUL_WEBHOOK_PASSWORD"]
+end
+```
+To accept webhooks **without** auth (not recommended), explicitly disable it:
+```
+c.webhook_authentication_required = false
+```
+
+#### 4. Create the webhook in Contentful
+In your Contentful space/environment, add a webhook that points to your mounted route (e.g. `https://your-app.example.com/consyncful/trigger_sync`) and select which events should trigger a sync (publish/unpublish, entries, assets, etc.). See Contentful documents here for information on setting up a webhook: [Configuring a webhook](https://www.contentful.com/developers/docs/webhooks/configure-webhook/)
+
+> [!IMPORTANT]
+> If your application is behind global authentication, VPN, or an allowlist, Contentful won’t be able to reach the webhook endpoint. Ensure that `POST` requests from Contentful can reach your mounted path (e.g. `/consyncful/...`). In many setups this means adding an ingress rule or route exemption for the webhook path. Keeping webhook authentication **enabled** (default) is recommended; configure matching credentials in the Contentful webhook.
+
+## Finding and interacting with models
+
+### Querying
 Models are available using standard Mongoid [queries](https://docs.mongodb.com/mongoid/current/tutorials/mongoid-queries/).
 
 ```ruby
@@ -160,7 +213,7 @@ instance = ModelName.find_by(instance: 'foo')
 instance.is_awesome # true
 ```
 
-#### References
+### References
 References work like you would expect:
 
 ```ruby
@@ -178,7 +231,7 @@ instance.other_things # all the referenced things, polymorphic, so might be diff
 instance.other_things.in_order # ordered the same as in Contentful
 ```
 
-#### Finding entries from different content types
+### Finding entries from different content types
 
 Because all Contentful models are stored as polymorphic subtypes of `Consyncful::Base`, you can query all entries without knowing what type you are looking for:
 
@@ -186,7 +239,7 @@ Because all Contentful models are stored as polymorphic subtypes of `Consyncful:
 Consyncful::Base.where(title: 'a title') # [ #<ModelName>, #<OtherModelName> ]
 ```
 
-### Sync callbacks
+## Sync callbacks
 
 You may want to attach some application logic to happen before or after a sync run, for example to update caches.
 
@@ -204,7 +257,7 @@ Consyncful::Sync.after_run do |updated_ids|
 end
 ```
 
-### Using Locales for specific fields
+## Using Locales for specific fields
 
 If fields have multiple locales then the default locale will be mapped to the field name. Additional locales will have a suffix (lower snake case) on the field name. e.g title (default), title_mi_nz (New Zealand Maori mi-NZ)
 
@@ -221,7 +274,7 @@ Consyncful.configure do |config|
 end
 ```
 
-### Sync specific contents using [Contentful Tag](https://www.contentful.com/help/tags/).
+## Sync specific contents using [Contentful Tag](https://www.contentful.com/help/tags/).
 You can configure Consyncful to sync or ignore specific contents using Contentful Tag.
 
 ```rb
@@ -241,7 +294,7 @@ Consyncful.configure do |config|
 end
 ```
 
-### Configuring what Mongo database Consyncful uses
+## Configuring what Mongo database Consyncful uses
 
 You can also configure what Mongoid client Consyncful uses and the name of the collection the entries are stored under. This is useful if you want to have your consyncful data hosted in a different mongo database than your application-specific mongo database.
 
@@ -252,7 +305,7 @@ Consyncful.configure do |config|
 end
 ```
 
-### Why do I have to use MongoDB?
+## Why do I have to use MongoDB?
 
 Consyncful currently only supports Mongoid ODM because models have dynamic schemas. And that's all we've had a chance to work out so far. The same pattern might be able to be extended to work with ActiveRecord, but having to migrate the local database as well as your contentful content type's seems tedious.
 
