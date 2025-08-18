@@ -27,11 +27,12 @@ flowchart TD
   - [Continuous sync](#continuous-sync-either-mode)
   - [Refresh from scratch](#refresh-from-scratch)
   - [Enabling webhook mode](#enabling-webhook-mode)
+  - [Sync callbacks](#sync-callbacks)
+  - [Sync specific contents using contentful tags](#sync-specific-contents-using-contentful-tag)
 - [Finding and interacting with models](#finding-and-interacting-with-models)
   - [Querying](#querying)
   - [References](#references)
   - [Finding entries from different content types](#finding-entries-from-different-content-types)
-- [Sync callbacks](#sync-callbacks)
 - [Using Locales for specific fields](#using-locales-for-specific-fields)
 - [Configuring what Mongo database Consyncful uses](#configuring-what-mongo-database-consyncful-uses)
 - [Why do I have to use MongoDB?](#why-do-i-have-to-use-mongodb)
@@ -206,6 +207,44 @@ In your Contentful space/environment, add a webhook that points to your mounted 
 > [!IMPORTANT]
 > If your application is behind global authentication, VPN, or an allowlist, Contentful won’t be able to reach the webhook endpoint. Ensure that `POST` requests from Contentful can reach your mounted path (e.g. `/consyncful/...`). In many setups this means adding an ingress rule or route exemption for the webhook path. Keeping webhook authentication **enabled** (default) is recommended; configure matching credentials in the Contentful webhook.
 
+### Sync callbacks
+
+You may want to attach some application logic to happen before or after a sync run, for example to update caches.
+
+Callbacks can be registered using:
+
+```ruby
+Consyncful::Sync.before_run do
+  # do something before the run
+end
+```
+
+```ruby
+Consyncful::Sync.after_run do |updated_ids|
+  # invalidate cache for updated_ids, or something
+end
+```
+
+### Sync specific contents using [Contentful Tag](https://www.contentful.com/help/tags/)
+You can configure Consyncful to sync or ignore specific contents using Contentful Tag.
+
+```rb
+Consyncful.configure do |config|
+  # Any contents tagged with 'myTag' will be stored in the database.
+  # Other contents without 'myTag' would be ignored.
+  config.content_tags = ['myTag'] # defaults to []
+end
+```
+
+Also, you can ignore contents with specific Tags.
+
+```rb
+Consyncful.configure do |config|
+  # Any contents tagged with 'ignoreTag' won't be stored in the database.
+  config.ignore_content_tags = ['ignoreTag'] # defaults to []
+end
+```
+
 ## Finding and interacting with models
 
 ### Querying
@@ -243,24 +282,6 @@ Because all Contentful models are stored as polymorphic subtypes of `Consyncful:
 Consyncful::Base.where(title: 'a title') # [ #<ModelName>, #<OtherModelName> ]
 ```
 
-## Sync callbacks
-
-You may want to attach some application logic to happen before or after a sync run, for example to update caches.
-
-Callbacks can be registered using:
-
-```ruby
-Consyncful::Sync.before_run do
-  # do something before the run
-end
-```
-
-```ruby
-Consyncful::Sync.after_run do |updated_ids|
-  # invalidate cache for updated_ids, or something
-end
-```
-
 ## Using Locales for specific fields
 
 If fields have multiple locales then the default locale will be mapped to the field name. Additional locales will have a suffix (lower snake case) on the field name. e.g title (default), title_mi_nz (New Zealand Maori mi-NZ)
@@ -275,26 +296,6 @@ Consyncful.configure do |config|
   # contentful_created_at
   # contentful_updated_at
   config.preserve_contentful_timestamps = true # defaults to false
-end
-```
-
-## Sync specific contents using [Contentful Tag](https://www.contentful.com/help/tags/).
-You can configure Consyncful to sync or ignore specific contents using Contentful Tag.
-
-```rb
-Consyncful.configure do |config|
-  # Any contents tagged with 'myTag' will be stored in the database. 
-  # Other contents without 'myTag' would be ignored.
-  config.content_tags = ['myTag'] # defaults to []
-end
-```
-
-Also, you can ignore contents with specific Tags.
-
-```rb
-Consyncful.configure do |config|
-  # Any contents tagged with 'ignoreTag' won't be stored in the database.
-  config.ignore_content_tags = ['ignoreTag'] # defaults to []
 end
 ```
 
