@@ -22,6 +22,8 @@ flowchart TD
 
 ## Contents
 - [Setup](#setup)
+  - [Installation](#installation)
+  - [Configuration options](#configuration-options)
 - [Creating contentful models in your Rails app](#creating-contentful-models-in-your-rails-app)
 - [Synchronizing contentful data](#synchronizing-contentful-data)
   - [Continuous sync](#continuous-sync-either-mode)
@@ -33,9 +35,10 @@ flowchart TD
   - [Querying](#querying)
   - [References](#references)
   - [Finding entries from different content types](#finding-entries-from-different-content-types)
-- [Using Locales for specific fields](#using-locales-for-specific-fields)
-- [Configuring what Mongo database Consyncful uses](#configuring-what-mongo-database-consyncful-uses)
-- [Why do I have to use MongoDB?](#why-do-i-have-to-use-mongodb)
+  - [Using Locales for specific fields](#using-locales-for-specific-fields)
+- [MongoDB Configuration](#mongodb-configuration)
+  - [Choosing the Mongo Database](#choosing-the-mongo-database)
+  - [Why MongoDB?](#why-mongodb)
 - [Development](#development)
 - [Contributing](#contributing)
 - [License](#license)
@@ -82,7 +85,7 @@ end
 > Consyncful uses the official [contentful.rb](https://github.com/contentful/contentful.rb) client. Any `contentful_client_options` you set are passed through to this library unchanged. Similary, settings in `contentful_sync_options` map to the parameters in Contentful’s [Content Delivery Sync API](https://www.contentful.com/developers/docs/references/content-delivery-api/#/reference/synchronization).
 
 
-#### Configuration options
+### Configuration options
 
 | Option | Description | Default |
 | --- | --- | --- |
@@ -282,11 +285,11 @@ Because all Contentful models are stored as polymorphic subtypes of `Consyncful:
 Consyncful::Base.where(title: 'a title') # [ #<ModelName>, #<OtherModelName> ]
 ```
 
-## Using Locales for specific fields
+### Using Locales for specific fields
 
 If fields have multiple locales then the default locale will be mapped to the field name. Additional locales will have a suffix (lower snake case) on the field name. e.g title (default), title_mi_nz (New Zealand Maori mi-NZ)
 
-### Preserving Contentful timestamps
+#### Preserving Contentful timestamps
 
 If you need to access the timestamps from Contentful, you can enable it by setting `preserve_contentful_timestamps` to `true`.
 
@@ -299,9 +302,11 @@ Consyncful.configure do |config|
 end
 ```
 
-## Configuring what Mongo database Consyncful uses
+## MongoDB Configuration
 
-You can also configure what Mongoid client Consyncful uses and the name of the collection the entries are stored under. This is useful if you want to have your consyncful data hosted in a different mongo database than your application-specific mongo database.
+### Choosing the Mongo Database
+
+You can configure which Mongoid client Consyncful uses, as well as the name of the collection where entries are stored. This is useful if you want Consyncful data to live in a separate MongoDB database from your application-specific database.
 
 ```rb
 Consyncful.configure do |config|
@@ -310,9 +315,9 @@ Consyncful.configure do |config|
 end
 ```
 
-## Why do I have to use MongoDB?
+### Why MongoDB?
 
-Consyncful currently only supports Mongoid ODM because models have dynamic schemas. And that's all we've had a chance to work out so far. The same pattern might be able to be extended to work with ActiveRecord, but having to migrate the local database as well as your contentful content type's seems tedious.
+Consyncful currently only supports the Mongoid ODM because models require dynamic schemas. Extending support to ActiveRecord could be possible in the future, but it would also require maintaining database migrations alongside Contentful content type changes—which adds complexity we wanted to avoid.
 
 ## Development
 
