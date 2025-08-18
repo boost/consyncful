@@ -2,8 +2,6 @@
 
 [Contentful](https://www.contentful.com/) -> MongoDB synchronisation for Rails.
 
-## Why Consyncful?
-
 Requesting complicated models from the Contentful Delivery API in Rails applications is often too slow, and makes testing applications painful. Consyncful uses Contentful's synchronisation API to keep a local, up-to-date copy of the entire content in a Mongo database.
 
 Once the content is available locally, finding and interact with contentful data is as easy as using [Mongoid](https://docs.mongodb.com/mongoid/current/tutorials/mongoid-documents/) ODM.
@@ -24,15 +22,13 @@ flowchart TD
 
 ## Contents
 - [Setup](#setup)
-  - [Installation](#installation)
-  - [Configuration](#configuration)
-- [Usage](#usage)
-  - [Creating contentful models in your Rails app](#creating-contentful-models-in-your-rails-app)
-  - [Synchronizing contentful data](#synchronizing-contentful-data)
-  - [Finding and interacting with models](#finding-and-interacting-with-models)
-    - [Querying](#querying)
-    - [References](#references)
-    - [Finding entries from different content types](#finding-entries-from-different-content-types)
+- [Creating contentful models in your Rails app](#creating-contentful-models-in-your-rails-app)
+- [Synchronizing contentful data](#synchronizing-contentful-data)
+- [Finding and interacting with models](#finding-and-interacting-with-models)
+  - [Querying](#querying)
+  - [References](#references)
+  - [Finding entries from different content types](#finding-entries-from-different-content-types)
+
   - [Sync callbacks](#sync-callbacks)
   - [Using Locales for specific fields](#using-locales-for-specific-fields)
   - [Configuring what Mongo database Consyncful uses](#configuring-what-mongo-database-consyncful-uses)
@@ -59,9 +55,6 @@ If you don't already use Mongoid, generate a mongoid.yml by running:
 
     $ rake g mongoid:config
 
-
-### Configuration
-
 Create `config/initializers/consyncful.rb`. An example with common configuration is:
 
 ```rb
@@ -82,8 +75,8 @@ Consyncful.configure do |config|
 end
 ```
 
-> [!IMPORTANT]
-> Consyncful uses the official [contentful.rb](https://github.com/contentful/contentful.rb) client. Any `contentful_client_options` you set are passed through to that library unchanged. Sync settings in `contentful_sync_options` map to the parameters in Contentful’s [Content Delivery Sync API](https://www.contentful.com/developers/docs/references/content-delivery-api/#/reference/synchronization).
+> [!NOTE]
+> Consyncful uses the official [contentful.rb](https://github.com/contentful/contentful.rb) client. Any `contentful_client_options` you set are passed through to this library unchanged. Similary, settings in `contentful_sync_options` map to the parameters in Contentful’s [Content Delivery Sync API](https://www.contentful.com/developers/docs/references/content-delivery-api/#/reference/synchronization).
 
 
 #### Configuration options
@@ -168,7 +161,7 @@ Now you've synced your data, it is all available via your Rails models.
 ### Enabling webhook mode
 
 > [!TIP]
-> **Prefer Webhook mode on limited plans**
+> **Webhook mode is recommended on limited plans**.
 > Polling makes API requests on every interval (default ~15s), which can quickly add up and exhaust quotas on lower-tier Contentful plans.
 > **Webhook mode** only syncs when Contentful sends an event, dramatically reducing API calls. If you’re hitting rate limits—or want to avoid them—switch to `:webhook`.
 > If you are hitting API rate limits and need to use polling, consider increasing the interval to reduce load.
