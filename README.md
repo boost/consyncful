@@ -36,6 +36,7 @@ flowchart TD
   - [References](#references)
   - [Finding entries from different content types](#finding-entries-from-different-content-types)
   - [Using Locales for specific fields](#using-locales-for-specific-fields)
+  - [Preserving Contentful timestamps](#preserving-contentful-timestamps)
 - [MongoDB Configuration](#mongodb-configuration)
   - [Choosing the Mongo Database](#choosing-the-mongo-database)
   - [Why MongoDB?](#why-mongodb)
@@ -289,7 +290,7 @@ Consyncful::Base.where(title: 'a title') # [ #<ModelName>, #<OtherModelName> ]
 
 If fields have multiple locales then the default locale will be mapped to the field name. Additional locales will have a suffix (lower snake case) on the field name. e.g title (default), title_mi_nz (New Zealand Maori mi-NZ)
 
-#### Preserving Contentful timestamps
+### Preserving Contentful timestamps
 
 If you need to access the timestamps from Contentful, you can enable it by setting `preserve_contentful_timestamps` to `true`.
 
