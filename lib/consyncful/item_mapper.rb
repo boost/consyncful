@@ -14,8 +14,12 @@ module Consyncful
     end
 
     def excluded_by_tag?
-      return (Consyncful.configuration.content_tags & item_tag_ids).empty?      if Consyncful.configuration.content_tags.any?
-      return (Consyncful.configuration.ignore_content_tags & item_tag_ids).any? if Consyncful.configuration.ignore_content_tags.any?
+      config = Consyncful.configuration
+      content_tags = config.content_tags
+      ignore_content_tags = config.ignore_content_tags
+
+      return (content_tags & item_tag_ids).empty?      if content_tags.any?
+      return (ignore_content_tags & item_tag_ids).any? if ignore_content_tags.any?
 
       false
     end
@@ -65,7 +69,7 @@ module Consyncful
 
       @item.fields_with_locales.each do |field, value_with_locales|
         value_with_locales.each do |locale_code, value|
-          next if value.is_a? Contentful::File # assets are handeled below
+          next if value.is_a? Contentful::File # assets are handled below
 
           field_name = localized_field_name(field, locale_code, default_locale)
           field_name, value = mapped_field_entry_for(field_name, value)

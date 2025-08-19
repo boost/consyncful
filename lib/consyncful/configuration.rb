@@ -2,7 +2,18 @@
 
 # Handles Rails configurations for Consyncful
 module Consyncful
-  ##
+  # Provides configuration options for Consyncful, including:
+  # - Contentful API client and sync options
+  # - MongoDB client and collection settings
+  # - Locale and content tag filtering
+  # - Sync mode (poll or webhook)
+  # - Webhook authentication credentials
+  #
+  # This class is typically accessed and customized via
+  #   Consyncful.configure do |config|
+  #     config.locale = 'en-NZ'
+  #     config.mongo_collection = 'my_models'
+  #   end
   class Configuration
     attr_accessor :contentful_client_options,
                   :contentful_sync_options,
@@ -11,9 +22,15 @@ module Consyncful
                   :mongo_collection,
                   :content_tags,
                   :ignore_content_tags,
-                  :preserve_contentful_timestamps
+                  :preserve_contentful_timestamps,
+                  :sync_mode,
+                  :webhook_authentication_required,
+                  :webhook_user,
+                  :webhook_password
 
+    # rubocop:disable Metrics/MethodLength
     def initialize
+      @sync_mode = :poll
       @contentful_client_options = {}
       @contentful_sync_options = {}
       @locale = 'en-NZ'
@@ -22,7 +39,12 @@ module Consyncful
       @content_tags = []
       @ignore_content_tags = []
       @preserve_contentful_timestamps = false
+
+      @webhook_authentication_required = true
+      @webhook_user = nil
+      @webhook_password = nil
     end
+    # rubocop:enable Metrics/MethodLength
 
     def initial_sync_options
       options = { initial: true }

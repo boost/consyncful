@@ -5,6 +5,10 @@ require 'spec_helper'
 RSpec.describe Consyncful::Configuration do
   let(:configuration) { Consyncful::Configuration.new }
 
+  it 'defaults to poll sync_mode' do
+    expect(configuration.sync_mode).to eq(:poll)
+  end
+
   describe '.initial_sync_options' do
     it 'always contains initial:true' do
       result = configuration.initial_sync_options

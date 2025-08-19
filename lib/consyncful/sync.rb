@@ -27,8 +27,23 @@ module Consyncful
     field :next_url
     field :last_run_at, type: DateTime
 
+    field :webhook_pending, type: Boolean, default: false
+
     def self.latest
       last || new
+    end
+
+    ##
+    # Signal that a webhook has been received and a sync should be triggered
+    def self.signal_webhook!
+      latest.set(webhook_pending: true)
+      true
+    end
+
+    ##
+    # Consume the webhook signal and set webhook_pending to false
+    def self.consume_webhook_signal!
+      latest.set(webhook_pending: false)
     end
 
     ##

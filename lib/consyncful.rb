@@ -1,9 +1,17 @@
 # frozen_string_literal: true
 
-require 'consyncful/version'
+# External dependencies
 require 'mongoid'
 require 'contentful'
+
+# Internal library files
+require 'consyncful/version'
 require 'consyncful/configuration'
 require 'consyncful/base'
 require 'consyncful/sync'
-require 'consyncful/railtie' if defined?(Rails)
+
+# Rails integration (only load if Rails is present)
+if defined?(Rails)
+  require 'consyncful/railtie'
+  require 'consyncful/engine'
+end
