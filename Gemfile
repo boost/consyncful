@@ -13,3 +13,13 @@ group :development do
   gem 'rubocop-rake'
   gem 'rubocop-rspec'
 end
+
+group :development, :test do
+  gem 'combustion', '~> 1.3'
+  gem 'rspec', '~> 3.13'
+  gem 'rspec-rails', '~> 6.1'
+end
+
+group :test do
+  gem 'database_cleaner-mongoid', '~> 2.0'
+end

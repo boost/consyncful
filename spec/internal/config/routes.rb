@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Rails.application.routes.draw do
-  mount Consyncful::Engine => "/consyncful"
+  mount Consyncful::Engine => '/consyncful'
 end

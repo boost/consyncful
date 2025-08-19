@@ -1,7 +1,17 @@
 # frozen_string_literal: true
 
-# lib/consyncful/sync_runner.rb
 module Consyncful
+  # The SyncRunner is responsible for continuously executing Contentful sync
+  # jobs at a configurable interval or in response to webhook signals.
+  #
+  # Modes:
+  # - :poll    — runs the sync every N seconds (default 15)
+  # - :webhook — waits for webhook signals and triggers a sync when received
+  #
+  # Behavior:
+  # - Starts with an initial sync (`Consyncful::Sync.latest.run`).
+  # - In poll mode, sleeps for the configured interval and then re-runs sync.
+  # - In webhook mode, listens for webhook signals and runs sync immediately.
   class SyncRunner
     DEFAULT_INTERVAL = 15
     VALID_MODES = %i[poll webhook].freeze
@@ -17,9 +27,7 @@ module Consyncful
 
       loop do
         sleep(@interval)
-        if @mode == :poll || Consyncful::Sync.consume_webhook_signal!
-          current_sync.run
-        end
+        current_sync.run if @mode == :poll || Consyncful::Sync.consume_webhook_signal!
       end
     end
 

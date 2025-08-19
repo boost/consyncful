@@ -31,20 +31,9 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
 
-  #
-  # Runtime dependencies
-  #
   spec.add_dependency 'contentful', ['>=2.11.1', '<3.0.0']
   spec.add_dependency 'hooks', '>=0.4.1'
   spec.add_dependency 'mongoid', '>=7.0.2'
   spec.add_dependency 'rainbow'
   spec.metadata['rubygems_mfa_required'] = 'true'
-
-  #
-  # Development / test dependencies (installed in CI because Gemfile has `gemspec`)
-  #
-  spec.add_development_dependency "rspec", "~> 3.13"
-  spec.add_development_dependency "rspec-rails", "~> 6.1"
-  spec.add_development_dependency "combustion", "~> 1.3"
-  spec.add_development_dependency "database_cleaner-mongoid", "~> 2.0"
 end
