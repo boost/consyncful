@@ -21,7 +21,7 @@ namespace :consyncful do
 
     seconds = args[:seconds]
     mode = Consyncful.configuration&.sync_mode || :poll
-    puts "mode=#{mode.inspect} interval=#{seconds.inspect}s"
+    puts "mode=#{mode.inspect} interval=#{(seconds || 15).inspect}s"
 
     Consyncful::SyncRunner.new(seconds: seconds, mode: mode).run
   end
