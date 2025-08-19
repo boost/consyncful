@@ -43,7 +43,10 @@ module Consyncful
     ##
     # Consume the webhook signal and set webhook_pending to false
     def self.consume_webhook_signal!
+      return false unless latest.webhook_pending?
+
       latest.set(webhook_pending: false)
+      true
     end
 
     ##
