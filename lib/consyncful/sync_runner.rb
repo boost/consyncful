@@ -17,7 +17,7 @@ module Consyncful
     VALID_MODES = %i[poll webhook].freeze
 
     def initialize(seconds: nil, mode: nil)
-      @interval = seconds || DEFAULT_INTERVAL
+      @interval = seconds&.to_i || DEFAULT_INTERVAL
       @mode     = validate_mode(mode)
     end
 
